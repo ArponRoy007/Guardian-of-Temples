@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,7 +17,7 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
-export default function LoginPage() {
+function LoginContent() {
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
@@ -63,7 +63,7 @@ export default function LoginPage() {
 
       if (role === "admin") {
         router.push("/admin");
-      } else if (role === "moderator") {
+      } else if (role === "verifier") { // Updated from moderator to match database
         router.push("/moderator");
       } else {
         router.push("/");
@@ -172,5 +172,20 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Wrapping the main component in a Suspense boundary for Next.js build compliance
+export default function LoginPage() {
+  return (
+    <Suspense 
+      fallback={
+        <div className="min-h-[85vh] flex items-center justify-center p-4">
+          <div className="text-sm text-slate-500">Loading secure login...</div>
+        </div>
+      }
+    >
+      <LoginContent />
+    </Suspense>
   );
 }
