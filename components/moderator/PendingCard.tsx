@@ -151,7 +151,7 @@ export function PendingCard({ incident, onModerated }: PendingCardProps) {
                 Private Submitter Contact (Mods Only)
               </span>
               <span className="font-medium text-slate-800 dark:text-slate-200 truncate block">
-                {incident.submitterContact || incident.submitter_contact || "No contact provided"}
+              {incident.submitter_contact || "No contact provided"}
               </span>
             </div>
           </div>
