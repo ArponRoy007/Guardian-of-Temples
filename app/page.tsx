@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
 import { BangladeshMap } from "@/components/map/BangladeshMap";
 import { SearchBar } from "@/components/search/SearchBar";
 import {
@@ -9,52 +10,57 @@ import {
   Clock,
   MapPin,
   ExternalLink,
-  Shield,
+  Sparkles,
 } from "lucide-react";
 
-export default function Home() {
-  const recentIncidents = [
-    {
-      id: "inc-1",
-      title: "Vandalism reported at Sri Sri Radha Govinda Mandir",
-      district: "Cumilla",
-      incidentDate: "2025-10-12",
-      type: "Idol Vandalism",
-      verifiedSources: 2,
-    },
-    {
-      id: "inc-2",
-      title: "Extortion demand served to Puja Celebration Committee",
-      district: "Chittagong",
-      incidentDate: "2025-10-11",
-      type: "Threats & Harassment",
-      verifiedSources: 1,
-    },
-    {
-      id: "inc-3",
-      title: "Idol damage attempted during night hours",
-      district: "Noakhali",
-      incidentDate: "2025-10-10",
-      type: "Property Damage",
-      verifiedSources: 3,
-    },
-    {
-      id: "inc-4",
-      title: "Arson attempt prevented by local mandap night watch",
-      district: "Rangpur",
-      incidentDate: "2025-10-09",
-      type: "Arson",
-      verifiedSources: 2,
-    },
-    {
-      id: "inc-5",
-      title: "Boundary wall desecration at Kali Temple",
-      district: "Gazipur",
-      incidentDate: "2025-10-08",
-      type: "Property Damage",
-      verifiedSources: 1,
-    },
-  ];
+export const revalidate = 0; // Ensures fresh database data on every request
+
+export default async function Home() {
+  const supabase = createClient();
+
+  // 1. Fetch live stat counts from Supabase
+  const { count: verifiedCount } = await supabase
+    .from("incidents")
+    .select("*", { count: "exact", head: true })
+    .eq("status", "approved");
+
+  const { count: pendingCount } = await supabase
+    .from("incidents")
+    .select("*", { count: "exact", head: true })
+    .eq("status", "pending");
+
+  // 2. Fetch all approved incidents to compute high-risk districts
+  const { data: approvedDistrictsData } = await supabase
+    .from("incidents")
+    .select("district_id")
+    .eq("status", "approved");
+
+  const districtCounts: Record<string, number> = {};
+  approvedDistrictsData?.forEach((item) => {
+    if (item.district_id) {
+      districtCounts[item.district_id] = (districtCounts[item.district_id] || 0) + 1;
+    }
+  });
+
+  const highRiskCount = Object.values(districtCounts).filter((count) => count >= 5).length;
+
+  // 3. Fetch latest approved incidents feed from database
+  const { data: recentIncidentsData } = await supabase
+    .from("incidents")
+    .select(`
+      id,
+      temple_name_raw,
+      temple:temples(name),
+      district:districts(name_en, name_bn),
+      incident_date,
+      incident_type,
+      description,
+      evidence_url,
+      created_at
+    `)
+    .eq("status", "approved")
+    .order("created_at", { ascending: false })
+    .limit(6);
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8">
@@ -77,21 +83,13 @@ export default function Home() {
             A mobile-first visualization platform mapping violence and vandalism incidents against Hindu temples across Bangladesh's 64 districts during Durga Puja to raise awareness and assist authorities.
           </p>
 
-          <div className="pt-2 flex flex-wrap items-center gap-3">
+          <div className="pt-2 flex items-center">
             <Link
-              href="/submit-report"
+              href="/submit-incident"
               className="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-5 py-3 text-xs sm:text-sm font-semibold text-white shadow-glow hover:bg-primary-500 active:scale-95 transition-all"
             >
               <PlusCircle className="h-4 w-4" />
               Report an Incident
-            </Link>
-
-            <Link
-              href="/login"
-              className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900/80 px-4 py-3 text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800 transition-colors"
-            >
-              <Shield className="h-4 w-4 text-amber-400" />
-              Verifier Login
             </Link>
           </div>
         </div>
@@ -102,9 +100,9 @@ export default function Home() {
         <SearchBar placeholder="Search 64 districts (e.g. Cumilla, চট্টগ্রাম) or temple name..." />
       </section>
 
-      {/* Quick Overview Stat Badges */}
+      {/* Real-time Overview Stat Badges */}
       <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="glass-card rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
+        <div className="glass-card rounded-2xl p-4 sm:p-5 flex flex-col justify-between border border-slate-200 dark:border-slate-800">
           <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">Districts Covered</span>
             <MapPin className="h-4 w-4 text-primary-500" />
@@ -117,47 +115,47 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="glass-card rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
+        <div className="glass-card rounded-2xl p-4 sm:p-5 flex flex-col justify-between border border-slate-200 dark:border-slate-800">
           <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">Verified Reports</span>
             <CheckCircle2 className="h-4 w-4 text-emerald-500" />
           </div>
           <div>
             <span className="font-display text-2xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">
-              42
+              {verifiedCount ?? 0}
             </span>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Publicly displayed on map</p>
           </div>
         </div>
 
-        <div className="glass-card rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
+        <div className="glass-card rounded-2xl p-4 sm:p-5 flex flex-col justify-between border border-slate-200 dark:border-slate-800">
           <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">Pending Review</span>
             <Clock className="h-4 w-4 text-amber-500" />
           </div>
           <div>
             <span className="font-display text-2xl sm:text-3xl font-extrabold text-amber-600 dark:text-amber-400">
-              18
+              {pendingCount ?? 0}
             </span>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Awaiting moderator check</p>
           </div>
         </div>
 
-        <div className="glass-card rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
+        <div className="glass-card rounded-2xl p-4 sm:p-5 flex flex-col justify-between border border-slate-200 dark:border-slate-800">
           <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">High Risk Areas</span>
             <AlertTriangle className="h-4 w-4 text-red-500" />
           </div>
           <div>
             <span className="font-display text-2xl sm:text-3xl font-extrabold text-red-600 dark:text-red-400">
-              5 Districts
+              {highRiskCount} {highRiskCount === 1 ? "District" : "Districts"}
             </span>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">5+ approved incidents</p>
           </div>
         </div>
       </section>
 
-      {/* CORE FEATURE: Interactive 64-District Choropleth Map */}
+      {/* CORE FEATURE: Interactive 64-District Map */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
@@ -186,38 +184,69 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {recentIncidents.map((incident) => (
-            <div
-              key={incident.id}
-              className="glass-card rounded-2xl p-4 space-y-3 flex flex-col justify-between border-l-4 border-l-red-600"
-            >
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1 rounded-md bg-red-100 dark:bg-red-950/80 px-2 py-0.5 text-[11px] font-semibold text-red-700 dark:text-red-300">
-                    {incident.type}
-                  </span>
-                  <span className="text-[11px] text-slate-400 font-medium">
-                    {incident.district} • {incident.incidentDate}
-                  </span>
-                </div>
-
-                <h3 className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-slate-100 leading-snug">
-                  {incident.title}
-                </h3>
-              </div>
-
-              <div className="pt-2 flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-100 dark:border-slate-800/80">
-                <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
-                  <CheckCircle2 className="h-3 w-3" /> {incident.verifiedSources} news source(s)
-                </span>
-                <span className="flex items-center gap-1 hover:underline cursor-pointer text-slate-400 hover:text-slate-200">
-                  Evidence <ExternalLink className="h-3 w-3" />
-                </span>
-              </div>
+        {!recentIncidentsData || recentIncidentsData.length === 0 ? (
+          <div className="rounded-3xl glass-card p-10 text-center space-y-3 border border-slate-200 dark:border-slate-800 max-w-md mx-auto">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-500/10 text-primary-500 border border-primary-500/20">
+              <Sparkles className="h-6 w-6" />
             </div>
-          ))}
-        </div>
+            <h3 className="font-bold text-sm text-slate-900 dark:text-white">
+              No Approved Incidents Yet
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              When incident reports are submitted and verified by moderators, they will automatically appear here on the public feed.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {recentIncidentsData.map((incident: any) => {
+              const templeName =
+                incident.temple?.name || incident.temple_name_raw || "Unlisted Temple Site";
+              const districtName = incident.district
+                ? `${incident.district.name_en}`
+                : "Bangladesh";
+
+              return (
+                <div
+                  key={incident.id}
+                  className="glass-card rounded-2xl p-4 space-y-3 flex flex-col justify-between border-l-4 border-l-red-600 border border-slate-200 dark:border-slate-800 shadow-sm"
+                >
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="inline-flex items-center gap-1 rounded-md bg-red-100 dark:bg-red-950/80 px-2 py-0.5 text-[11px] font-semibold text-red-700 dark:text-red-300 capitalize">
+                        {incident.incident_type?.replace("_", " ") || "Incident"}
+                      </span>
+                      <span className="text-[11px] text-slate-400 font-medium">
+                        {districtName} • {incident.incident_date}
+                      </span>
+                    </div>
+
+                    <h3 className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-slate-100 leading-snug line-clamp-2">
+                      {incident.description || templeName}
+                    </h3>
+                  </div>
+
+                  <div className="pt-2 flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-100 dark:border-slate-800/80">
+                    <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
+                      <CheckCircle2 className="h-3 w-3" /> Verified Report
+                    </span>
+                    {incident.evidence_url ? (
+                      <a
+                        href={incident.evidence_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 hover:underline text-primary-600 dark:text-primary-400 font-medium"
+                      >
+                        Evidence <ExternalLink className="h-3 w-3" />
+                      </a>
+                    ) : (
+                      <span className="text-slate-400">Public Record</span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </section>
     </div>
   );

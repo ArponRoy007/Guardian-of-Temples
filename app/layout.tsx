@@ -10,9 +10,10 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
 
 export const metadata: Metadata = {
-  title: "Guardian of Temples | Bangladesh Incident Tracker & Safety Map",
-  description:
-    "Protecting Sacred Spaces, Informing Safe Journeys — A mobile-first visualization & tracking platform mapping temple safety across Bangladesh's 64 districts during Durga Puja.",
+  title: "Guardian of Temples | Protecting Every Temple Across Bangladesh",
+
+description:
+"The official community platform for reporting, verifying, and mapping temple-related incidents across Bangladesh's 64 districts during Durga Puja. Together, we can protect sacred spaces, support affected communities, and promote safer celebrations.",
   icons: {
     icon: "/favicon.svg",
     apple: "/favicon.svg",

@@ -18,7 +18,6 @@ import {
   Menu,
   X
 } from "lucide-react";
-import { EmergencyFloatingButton } from "@/components/ui/EmergencyFloatingButton";
 import type { User } from "@supabase/supabase-js";
 
 export function Navbar() {
@@ -277,9 +276,6 @@ export function Navbar() {
           </div>
         )}
       </header>
-
-      {/* Persistent Floating Emergency Hotline Button for Mobile */}
-      <EmergencyFloatingButton />
     </>
   );
 }

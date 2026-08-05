@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { useAuth } from "@/lib/hooks/useAuth";
 import {
   FileText,
   Clock,
@@ -29,17 +28,26 @@ interface MySubmission {
 }
 
 export default function MySubmissionsPage() {
-  const { user, loading: authLoading } = useAuth();
   const [submissions, setSubmissions] = useState<MySubmission[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const supabase = createClient();
 
   useEffect(() => {
-    async function loadUserSubmissions() {
-      if (!user) return;
+    let isMounted = true;
 
+    async function loadUserSubmissions() {
       try {
         setLoading(true);
+        
+        // 1. Get user directly from Supabase (bypassing custom hook issues)
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        
+        if (authError || !user) {
+          if (isMounted) setLoading(false);
+          return;
+        }
+
+        // 2. Fetch the user's submissions
         const { data, error } = await supabase
           .from("incidents")
           .select(`
@@ -58,22 +66,24 @@ export default function MySubmissionsPage() {
 
         if (error) {
           console.error("Error loading submissions:", error.message);
-        } else if (data) {
+        } else if (data && isMounted) {
           setSubmissions(data as unknown as MySubmission[]);
         }
       } catch (err) {
         console.error("Failed to query submissions:", err);
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     }
 
-    if (user) {
-      loadUserSubmissions();
-    } else if (!authLoading) {
-      setLoading(false);
-    }
-  }, [user, authLoading]);
+    loadUserSubmissions();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [supabase]);
 
   const getStatusBadge = (status: "pending" | "approved" | "rejected") => {
     if (status === "approved") {
@@ -122,7 +132,7 @@ export default function MySubmissionsPage() {
       </div>
 
       {/* Loading State */}
-      {(loading || authLoading) && (
+      {loading && (
         <div className="rounded-3xl glass-card p-12 text-center space-y-3">
           <Loader2 className="h-8 w-8 text-primary-500 animate-spin mx-auto" />
           <p className="text-xs text-slate-500">Loading your submitted reports...</p>
@@ -130,7 +140,7 @@ export default function MySubmissionsPage() {
       )}
 
       {/* Submissions Card List */}
-      {!loading && !authLoading && (
+      {!loading && (
         <>
           {submissions.length === 0 ? (
             <div className="rounded-3xl glass-card p-10 text-center space-y-4 max-w-lg mx-auto border border-slate-200 dark:border-slate-800">
