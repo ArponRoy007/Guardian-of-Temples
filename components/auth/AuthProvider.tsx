@@ -41,7 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.error("Error fetching user profile:", error.message);
         setProfile(null);
       } else if (data) {
-        setProfile(data as UserProfile);
+        setProfile(data as unknown as UserProfile);
       }
     } catch (err) {
       console.error("Profile query failed:", err);
