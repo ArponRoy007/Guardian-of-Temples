@@ -21,7 +21,7 @@ export function Navbar() {
   const { theme, setTheme } = useTheme();
   const { user, profile, signOut } = useAuth();
 
-  const isModerator = profile?.role === "moderator" || profile?.role === "admin";
+  const isModerator = profile?.role === "verifier" || profile?.role === "admin";
   const isAdmin = profile?.role === "admin";
 
   return (
