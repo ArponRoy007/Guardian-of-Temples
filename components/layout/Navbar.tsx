@@ -14,7 +14,9 @@ import {
   LogOut,
   Sliders,
   ShieldCheck,
-  User as UserIcon
+  User as UserIcon,
+  Menu,
+  X
 } from "lucide-react";
 import { EmergencyFloatingButton } from "@/components/ui/EmergencyFloatingButton";
 import type { User } from "@supabase/supabase-js";
@@ -25,10 +27,11 @@ export function Navbar() {
   const { theme, setTheme } = useTheme();
   const supabase = createClient();
 
-  // Local Auth State for real-time UI updates
+  // Local Auth & UI State
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<any>(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -51,7 +54,7 @@ export function Navbar() {
     }
     loadUser();
 
-    // 2. Listen for auth changes (Login, Logout, Token Refresh)
+    // 2. Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (isMounted) {
@@ -77,7 +80,8 @@ export function Navbar() {
     };
   }, [supabase]);
 
-  const isModerator = profile?.role === "verifier" || profile?.role === "admin";
+  // FIX: Added 'moderator' to the role check to match your database
+  const isModerator = profile?.role === "moderator" || profile?.role === "verifier" || profile?.role === "admin";
   const isAdmin = profile?.role === "admin";
 
   const handleSignOut = async () => {
@@ -91,7 +95,7 @@ export function Navbar() {
       <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md transition-colors">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           
-          {/* Guardian of Temples SVG Logo & Wordmark */}
+          {/* Logo */}
           <Link href="/" className="flex items-center group">
             <Logo showText={true} size={36} colorMode="fullColor" />
           </Link>
@@ -147,14 +151,14 @@ export function Navbar() {
             )}
           </nav>
 
-          {/* Action Buttons (Report Incident, Theme Toggle, Auth) */}
-          <div className="flex items-center gap-3">
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2 sm:gap-3">
             <Link
               href="/submit-incident"
-              className="inline-flex items-center gap-1.5 rounded-xl bg-primary-600 px-3.5 py-2 text-xs font-semibold text-white shadow-glow hover:bg-primary-500 active:scale-95 transition-all"
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-xl bg-primary-600 px-3.5 py-2 text-xs font-semibold text-white shadow-glow hover:bg-primary-500 active:scale-95 transition-all"
             >
               <PlusCircle className="h-4 w-4" />
-              <span className="hidden sm:inline">Report Incident</span>
+              <span>Report Incident</span>
             </Link>
 
             {/* Dark/Light Theme Toggle */}
@@ -171,8 +175,8 @@ export function Navbar() {
             {isAuthLoading ? (
               <div className="h-8 w-16 animate-pulse rounded-xl bg-slate-200 dark:bg-slate-800"></div>
             ) : user ? (
-              <div className="flex items-center gap-3 ml-2">
-                {/* Profile Display */}
+              <div className="flex items-center gap-2 ml-1">
+                {/* Profile Display (Hidden on very small screens) */}
                 <div className="hidden sm:flex items-center gap-2 pr-3 border-r border-slate-200 dark:border-slate-800">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400 font-bold text-xs uppercase shadow-sm border border-primary-200 dark:border-primary-800">
                     {profile?.full_name ? profile.full_name.charAt(0) : <UserIcon className="h-4 w-4" />}
@@ -187,7 +191,6 @@ export function Navbar() {
                   </div>
                 </div>
 
-                {/* Sign Out Button */}
                 <button
                   onClick={handleSignOut}
                   className="rounded-xl border border-slate-200 dark:border-slate-800 p-2 text-slate-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all"
@@ -204,8 +207,75 @@ export function Navbar() {
                 Sign In
               </Link>
             )}
+
+            {/* Mobile Menu Toggle Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden ml-1 rounded-xl border border-slate-200 dark:border-slate-800 p-2 text-slate-500 hover:text-primary-500 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+            >
+              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Dropdown Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 px-4 py-5 space-y-4 shadow-lg">
+            <Link
+              href="/"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-primary-500"
+            >
+              Incident Map
+            </Link>
+            
+            <Link
+              href="/helpline"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex items-center gap-2 text-sm font-semibold text-red-600 dark:text-red-500"
+            >
+              <PhoneCall className="h-4 w-4" /> Emergency Helplines
+            </Link>
+
+            <Link
+              href="/submit-incident"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex items-center gap-2 text-sm font-semibold text-primary-600 dark:text-primary-400"
+            >
+              <PlusCircle className="h-4 w-4" /> Report Incident
+            </Link>
+
+            {user && (
+              <Link
+                href="/my-submissions"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-primary-500"
+              >
+                My Reports
+              </Link>
+            )}
+
+            {isModerator && (
+              <Link
+                href="/moderator"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-2 text-sm font-semibold text-amber-600 dark:text-amber-500"
+              >
+                <ShieldCheck className="h-4 w-4" /> Moderator Portal
+              </Link>
+            )}
+
+            {isAdmin && (
+              <Link
+                href="/admin"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-2 text-sm font-semibold text-red-600 dark:text-red-500"
+              >
+                <Sliders className="h-4 w-4" /> Admin Control
+              </Link>
+            )}
+          </div>
+        )}
       </header>
 
       {/* Persistent Floating Emergency Hotline Button for Mobile */}
