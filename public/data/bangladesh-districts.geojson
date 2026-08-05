@@ -1,0 +1,581 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "BD-13",
+      "properties": { "geo_code": "BD-13", "name_en": "Dhaka", "name_bn": "ঢাকা", "division": "Dhaka" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[90.3, 23.9], [90.5, 23.9], [90.5, 23.7], [90.3, 23.7], [90.3, 23.9]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-18",
+      "properties": { "geo_code": "BD-18", "name_en": "Gazipur", "name_bn": "গাজীপুর", "division": "Dhaka" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[90.3, 24.1], [90.6, 24.1], [90.6, 23.9], [90.3, 23.9], [90.3, 24.1]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-26",
+      "properties": { "geo_code": "BD-26", "name_en": "Kishoreganj", "name_bn": "কিশোরগঞ্জ", "division": "Dhaka" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[90.7, 24.5], [91.0, 24.5], [91.0, 24.1], [90.7, 24.1], [90.7, 24.5]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-33",
+      "properties": { "geo_code": "BD-33", "name_en": "Manikganj", "name_bn": "মানিকগঞ্জ", "division": "Dhaka" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[89.8, 23.9], [90.2, 23.9], [90.2, 23.7], [89.8, 23.7], [89.8, 23.9]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-35",
+      "properties": { "geo_code": "BD-35", "name_en": "Munshiganj", "name_bn": "মুন্সীগঞ্জ", "division": "Dhaka" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[90.3, 23.6], [90.6, 23.6], [90.6, 23.4], [90.3, 23.4], [90.3, 23.6]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-38",
+      "properties": { "geo_code": "BD-38", "name_en": "Narayanganj", "name_bn": "নারায়ণগঞ্জ", "division": "Dhaka" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[90.5, 23.7], [90.7, 23.7], [90.7, 23.5], [90.5, 23.5], [90.5, 23.7]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-41",
+      "properties": { "geo_code": "BD-41", "name_en": "Narsingdi", "name_bn": "নরসিংদী", "division": "Dhaka" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[90.6, 24.1], [90.9, 24.1], [90.9, 23.8], [90.6, 23.8], [90.6, 24.1]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-63",
+      "properties": { "geo_code": "BD-63", "name_en": "Tangail", "name_bn": "টাঙ্গাইল", "division": "Dhaka" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[89.8, 24.5], [90.3, 24.5], [90.3, 24.0], [89.8, 24.0], [89.8, 24.5]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-15",
+      "properties": { "geo_code": "BD-15", "name_en": "Faridpur", "name_bn": "ফরিদপুর", "division": "Dhaka" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[89.6, 23.6], [90.1, 23.6], [90.1, 23.2], [89.6, 23.2], [89.6, 23.6]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-17",
+      "properties": { "geo_code": "BD-17", "name_en": "Gopalganj", "name_bn": "গোপালগঞ্জ", "division": "Dhaka" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[89.7, 23.2], [90.1, 23.2], [90.1, 22.8], [89.7, 22.8], [89.7, 23.2]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-28",
+      "properties": { "geo_code": "BD-28", "name_en": "Madaripur", "name_bn": "মাদারীপুর", "division": "Dhaka" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[90.0, 23.3], [90.4, 23.3], [90.4, 23.0], [90.0, 23.0], [90.0, 23.3]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-53",
+      "properties": { "geo_code": "BD-53", "name_en": "Rajbari", "name_bn": "রাজবাড়ী", "division": "Dhaka" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[89.4, 23.8], [89.8, 23.8], [89.8, 23.5], [89.4, 23.5], [89.4, 23.8]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-60",
+      "properties": { "geo_code": "BD-60", "name_en": "Shariatpur", "name_bn": "শরীয়তপুর", "division": "Dhaka" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[90.2, 23.3], [90.6, 23.3], [90.6, 23.0], [90.2, 23.0], [90.2, 23.3]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-10",
+      "properties": { "geo_code": "BD-10", "name_en": "Chittagong", "name_bn": "চট্টগ্রাম", "division": "Chittagong" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[91.7, 22.5], [92.1, 22.5], [92.1, 22.0], [91.7, 22.0], [91.7, 22.5]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-11",
+      "properties": { "geo_code": "BD-11", "name_en": "Cox's Bazar", "name_bn": "কক্সবাজার", "division": "Chittagong" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[91.8, 21.8], [92.3, 21.8], [92.3, 20.8], [91.8, 20.8], [91.8, 21.8]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-56",
+      "properties": { "geo_code": "BD-56", "name_en": "Rangamati", "name_bn": "রাঙ্গামাটি", "division": "Chittagong" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[92.0, 23.4], [92.5, 23.4], [92.5, 22.3], [92.0, 22.3], [92.0, 23.4]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-01",
+      "properties": { "geo_code": "BD-01", "name_en": "Bandarban", "name_bn": "বান্দরবান", "division": "Chittagong" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[92.1, 22.2], [92.6, 22.2], [92.6, 21.2], [92.1, 21.2], [92.1, 22.2]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-24",
+      "properties": { "geo_code": "BD-24", "name_en": "Khagrachhari", "name_bn": "খাগড়াছড়ি", "division": "Chittagong" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[91.8, 23.7], [92.2, 23.7], [92.2, 22.8], [91.8, 22.8], [91.8, 23.7]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-16",
+      "properties": { "geo_code": "BD-16", "name_en": "Feni", "name_bn": "ফেনী", "division": "Chittagong" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[91.2, 23.2], [91.6, 23.2], [91.6, 22.8], [91.2, 22.8], [91.2, 23.2]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-31",
+      "properties": { "geo_code": "BD-31", "name_en": "Lakshmipur", "name_bn": "লক্ষ্মীপুর", "division": "Chittagong" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[90.7, 23.0], [91.1, 23.0], [91.1, 22.6], [90.7, 22.6], [90.7, 23.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-08",
+      "properties": { "geo_code": "BD-08", "name_en": "Comilla", "name_bn": "কুমিল্লা", "division": "Chittagong" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[90.9, 23.6], [91.4, 23.6], [91.4, 23.1], [90.9, 23.1], [90.9, 23.6]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-47",
+      "properties": { "geo_code": "BD-47", "name_en": "Noakhali", "name_bn": "নোয়াখালী", "division": "Chittagong" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[90.9, 22.9], [91.4, 22.9], [91.4, 22.4], [90.9, 22.4], [90.9, 22.9]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-04",
+      "properties": { "geo_code": "BD-04", "name_en": "Brahmanbaria", "name_bn": "ব্রাহ্মণবাড়িয়া", "division": "Chittagong" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[90.9, 24.2], [91.3, 24.2], [91.3, 23.6], [90.9, 23.6], [90.9, 24.2]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-09",
+      "properties": { "geo_code": "BD-09", "name_en": "Chandpur", "name_bn": "চাঁদপুর", "division": "Chittagong" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[90.5, 23.4], [90.9, 23.4], [90.9, 23.0], [90.5, 23.0], [90.5, 23.4]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-54",
+      "properties": { "geo_code": "BD-54", "name_en": "Rajshahi", "name_bn": "রাজশাহী", "division": "Rajshahi" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[88.4, 24.6], [88.9, 24.6], [88.9, 24.2], [88.4, 24.2], [88.4, 24.6]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-44",
+      "properties": { "geo_code": "BD-44", "name_en": "Natore", "name_bn": "নাটোর", "division": "Rajshahi" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[88.9, 24.6], [89.3, 24.6], [89.3, 24.1], [88.9, 24.1], [88.9, 24.6]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-37",
+      "properties": { "geo_code": "BD-37", "name_en": "Naogaon", "name_bn": "নওগাঁ", "division": "Rajshahi" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[88.5, 25.1], [89.1, 25.1], [89.1, 24.5], [88.5, 24.5], [88.5, 25.1]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-45",
+      "properties": { "geo_code": "BD-45", "name_en": "Chapainawabganj", "name_bn": "চাঁপাইনবাবগঞ্জ", "division": "Rajshahi" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[88.0, 24.9], [88.5, 24.9], [88.5, 24.4], [88.0, 24.4], [88.0, 24.9]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-49",
+      "properties": { "geo_code": "BD-49", "name_en": "Pabna", "name_bn": "পাবনা", "division": "Rajshahi" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[89.0, 24.2], [89.6, 24.2], [89.6, 23.8], [89.0, 23.8], [89.0, 24.2]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-59",
+      "properties": { "geo_code": "BD-59", "name_en": "Sirajganj", "name_bn": "সিরাজগঞ্জ", "division": "Rajshahi" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[89.4, 24.7], [89.8, 24.7], [89.8, 24.1], [89.4, 24.1], [89.4, 24.7]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-03",
+      "properties": { "geo_code": "BD-03", "name_en": "Bogra", "name_bn": "বগুড়া", "division": "Rajshahi" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[88.9, 25.1], [89.5, 25.1], [89.5, 24.5], [88.9, 24.5], [88.9, 25.1]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-20",
+      "properties": { "geo_code": "BD-20", "name_en": "Joypurhat", "name_bn": "জয়পুরহাট", "division": "Rajshahi" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[88.9, 25.3], [89.2, 25.3], [89.2, 24.9], [88.9, 24.9], [88.9, 25.3]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-27",
+      "properties": { "geo_code": "BD-27", "name_en": "Khulna", "name_bn": "খুলনা", "division": "Khulna" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[89.2, 23.0], [89.7, 23.0], [89.7, 22.2], [89.2, 22.2], [89.2, 23.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-05",
+      "properties": { "geo_code": "BD-05", "name_en": "Bagerhat", "name_bn": "বাগেরহাট", "division": "Khulna" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[89.5, 22.8], [90.0, 22.8], [90.0, 21.8], [89.5, 21.8], [89.5, 22.8]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-58",
+      "properties": { "geo_code": "BD-58", "name_en": "Satkhira", "name_bn": "সাতক্ষীরা", "division": "Khulna" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[88.9, 22.8], [89.3, 22.8], [89.3, 21.7], [88.9, 21.7], [88.9, 22.8]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-22",
+      "properties": { "geo_code": "BD-22", "name_en": "Jessore", "name_bn": "যশোর", "division": "Khulna" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[88.9, 23.4], [89.4, 23.4], [89.4, 22.8], [88.9, 22.8], [88.9, 23.4]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-32",
+      "properties": { "geo_code": "BD-32", "name_en": "Magura", "name_bn": "মাগুরা", "division": "Khulna" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[89.3, 23.6], [89.6, 23.6], [89.6, 23.3], [89.3, 23.3], [89.3, 23.6]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-23",
+      "properties": { "geo_code": "BD-23", "name_en": "Jhenaidah", "name_bn": "ঝিনাইদহ", "division": "Khulna" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[88.9, 23.7], [89.3, 23.7], [89.3, 23.2], [88.9, 23.2], [88.9, 23.7]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-40",
+      "properties": { "geo_code": "BD-40", "name_en": "Narail", "name_bn": "নড়াইল", "division": "Khulna" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[89.4, 23.3], [89.7, 23.3], [89.7, 23.0], [89.4, 23.0], [89.4, 23.3]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-30",
+      "properties": { "geo_code": "BD-30", "name_en": "Kushtia", "name_bn": "কুষ্টিয়া", "division": "Khulna" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[88.7, 24.1], [89.2, 24.1], [89.2, 23.7], [88.7, 23.7], [88.7, 24.1]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-34",
+      "properties": { "geo_code": "BD-34", "name_en": "Meherpur", "name_bn": "মেহেরপুর", "division": "Khulna" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[88.5, 23.9], [88.8, 23.9], [88.8, 23.6], [88.5, 23.6], [88.5, 23.9]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-12",
+      "properties": { "geo_code": "BD-12", "name_en": "Chuadanga", "name_bn": "চুয়াডাঙ্গা", "division": "Khulna" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[88.7, 23.7], [89.0, 23.7], [89.0, 23.4], [88.7, 23.4], [88.7, 23.7]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-06",
+      "properties": { "geo_code": "BD-06", "name_en": "Barisal", "name_bn": "বরিশাল", "division": "Barisal" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[90.1, 23.0], [90.5, 23.0], [90.5, 22.5], [90.1, 22.5], [90.1, 23.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-07",
+      "properties": { "geo_code": "BD-07", "name_en": "Bhola", "name_bn": "ভোলা", "division": "Barisal" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[90.6, 22.8], [91.0, 22.8], [91.0, 21.9], [90.6, 21.9], [90.6, 22.8]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-21",
+      "properties": { "geo_code": "BD-21", "name_en": "Jhalokati", "name_bn": "ঝালকাঠি", "division": "Barisal" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[90.1, 22.8], [90.3, 22.8], [90.3, 22.5], [90.1, 22.5], [90.1, 22.8]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-50",
+      "properties": { "geo_code": "BD-50", "name_en": "Pirojpur", "name_bn": "পিরোজপুর", "division": "Barisal" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[89.8, 22.8], [90.1, 22.8], [90.1, 22.4], [89.8, 22.4], [89.8, 22.8]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-02",
+      "properties": { "geo_code": "BD-02", "name_en": "Barguna", "name_bn": "বরগুনা", "division": "Barisal" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[89.9, 22.4], [90.4, 22.4], [90.4, 21.8], [89.9, 21.8], [89.9, 22.4]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-51",
+      "properties": { "geo_code": "BD-51", "name_en": "Patuakhali", "name_bn": "পটুয়াখালী", "division": "Barisal" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[90.2, 22.5], [90.7, 22.5], [90.7, 21.7], [90.2, 21.7], [90.2, 22.5]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-62",
+      "properties": { "geo_code": "BD-62", "name_en": "Sylhet", "name_bn": "সিলেট", "division": "Sylhet" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[91.7, 25.2], [92.4, 25.2], [92.4, 24.6], [91.7, 24.6], [91.7, 25.2]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-36",
+      "properties": { "geo_code": "BD-36", "name_en": "Moulvibazar", "name_bn": "মৌলভীবাজার", "division": "Sylhet" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[91.6, 24.7], [92.2, 24.7], [92.2, 24.1], [91.6, 24.1], [91.6, 24.7]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-19",
+      "properties": { "geo_code": "BD-19", "name_en": "Habiganj", "name_bn": "হবিগঞ্জ", "division": "Sylhet" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[91.3, 24.6], [91.7, 24.6], [91.7, 23.9], [91.3, 23.9], [91.3, 24.6]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-61",
+      "properties": { "geo_code": "BD-61", "name_en": "Sunamganj", "name_bn": "সুনামগঞ্জ", "division": "Sylhet" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[91.1, 25.3], [91.7, 25.3], [91.7, 24.6], [91.1, 24.6], [91.1, 25.3]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-55",
+      "properties": { "geo_code": "BD-55", "name_en": "Rangpur", "name_bn": "রংপুর", "division": "Rangpur" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[89.0, 25.9], [89.5, 25.9], [89.5, 25.4], [89.0, 25.4], [89.0, 25.9]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-14",
+      "properties": { "geo_code": "BD-14", "name_en": "Gaibandha", "name_bn": "গাইবান্ধা", "division": "Rangpur" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[89.3, 25.5], [89.8, 25.5], [89.8, 25.0], [89.3, 25.0], [89.3, 25.5]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-25",
+      "properties": { "geo_code": "BD-25", "name_en": "Kurigram", "name_bn": "কুড়িগ্রাম", "division": "Rangpur" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[89.5, 26.3], [89.9, 26.3], [89.9, 25.5], [89.5, 25.5], [89.5, 26.3]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-46",
+      "properties": { "geo_code": "BD-46", "name_en": "Nilphamari", "name_bn": "নীলফামারী", "division": "Rangpur" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[88.7, 26.2], [89.1, 26.2], [89.1, 25.7], [88.7, 25.7], [88.7, 26.2]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-32-R",
+      "properties": { "geo_code": "BD-32-R", "name_en": "Lalmonirhat", "name_bn": "লালমনিরহাট", "division": "Rangpur" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[89.0, 26.4], [89.5, 26.4], [89.5, 25.7], [89.0, 25.7], [89.0, 26.4]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-14-D",
+      "properties": { "geo_code": "BD-14-D", "name_en": "Dinajpur", "name_bn": "দিনাজপুর", "division": "Rangpur" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[88.4, 25.9], [89.0, 25.9], [89.0, 25.2], [88.4, 25.2], [88.4, 25.9]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-64",
+      "properties": { "geo_code": "BD-64", "name_en": "Thakurgaon", "name_bn": "ঠাকুরগাঁও", "division": "Rangpur" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[88.2, 26.2], [88.6, 26.2], [88.6, 25.7], [88.2, 25.7], [88.2, 26.2]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-52",
+      "properties": { "geo_code": "BD-52", "name_en": "Panchagarh", "name_bn": "পঞ্চগড়", "division": "Rangpur" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[88.3, 26.6], [88.7, 26.6], [88.7, 26.1], [88.3, 26.1], [88.3, 26.6]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-39",
+      "properties": { "geo_code": "BD-39", "name_en": "Mymensingh", "name_bn": "ময়মনসিংহ", "division": "Mymensingh" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[90.1, 25.1], [90.7, 25.1], [90.7, 24.4], [90.1, 24.4], [90.1, 25.1]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-21-J",
+      "properties": { "geo_code": "BD-21-J", "name_en": "Jamalpur", "name_bn": "জামালপুর", "division": "Mymensingh" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[89.7, 25.2], [90.2, 25.2], [90.2, 24.7], [89.7, 24.7], [89.7, 25.2]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-43",
+      "properties": { "geo_code": "BD-43", "name_en": "Netrokona", "name_bn": "নেত্রকোণা", "division": "Mymensingh" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[90.5, 25.2], [91.1, 25.2], [91.1, 24.6], [90.5, 24.6], [90.5, 25.2]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "BD-57",
+      "properties": { "geo_code": "BD-57", "name_en": "Sherpur", "name_bn": "শেরপুর", "division": "Mymensingh" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[89.9, 25.3], [90.3, 25.3], [90.3, 24.9], [89.9, 24.9], [89.9, 25.3]]]
+      }
+    }
+  ]
+}
