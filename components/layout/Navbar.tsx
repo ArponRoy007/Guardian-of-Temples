@@ -1,10 +1,11 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import { useAuth } from "@/lib/hooks/useAuth";
 import { Logo } from "@/components/ui/Logo";
+import { createClient } from "@/lib/supabase/client";
 import {
   Sun,
   Moon,
@@ -13,16 +14,77 @@ import {
   LogOut,
   Sliders,
   ShieldCheck,
+  User as UserIcon
 } from "lucide-react";
 import { EmergencyFloatingButton } from "@/components/ui/EmergencyFloatingButton";
+import type { User } from "@supabase/supabase-js";
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
-  const { user, profile, signOut } = useAuth();
+  const supabase = createClient();
+
+  // Local Auth State for real-time UI updates
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<any>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    // 1. Fetch initial session on mount
+    async function loadUser() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (isMounted) {
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          const { data } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", session.user.id)
+            .single();
+          setProfile(data);
+        }
+        setIsAuthLoading(false);
+      }
+    }
+    loadUser();
+
+    // 2. Listen for auth changes (Login, Logout, Token Refresh)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (isMounted) {
+          setUser(session?.user ?? null);
+          if (session?.user) {
+            const { data } = await supabase
+              .from("profiles")
+              .select("*")
+              .eq("id", session.user.id)
+              .single();
+            setProfile(data);
+          } else {
+            setProfile(null);
+          }
+          setIsAuthLoading(false);
+        }
+      }
+    );
+
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
 
   const isModerator = profile?.role === "verifier" || profile?.role === "admin";
   const isAdmin = profile?.role === "admin";
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    router.push("/");
+    router.refresh();
+  };
 
   return (
     <>
@@ -105,12 +167,30 @@ export function Navbar() {
               <Moon className="h-4 w-4 block dark:hidden" />
             </button>
 
-            {/* User Auth Buttons */}
-            {user ? (
-              <div className="flex items-center gap-2">
+            {/* User Auth Buttons / Profile Indicator */}
+            {isAuthLoading ? (
+              <div className="h-8 w-16 animate-pulse rounded-xl bg-slate-200 dark:bg-slate-800"></div>
+            ) : user ? (
+              <div className="flex items-center gap-3 ml-2">
+                {/* Profile Display */}
+                <div className="hidden sm:flex items-center gap-2 pr-3 border-r border-slate-200 dark:border-slate-800">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400 font-bold text-xs uppercase shadow-sm border border-primary-200 dark:border-primary-800">
+                    {profile?.full_name ? profile.full_name.charAt(0) : <UserIcon className="h-4 w-4" />}
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-200 max-w-[100px] truncate leading-tight">
+                      {profile?.full_name || "User"}
+                    </span>
+                    <span className="text-[10px] font-medium text-slate-400 capitalize leading-tight">
+                      {profile?.role || "Member"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Sign Out Button */}
                 <button
-                  onClick={() => signOut()}
-                  className="rounded-xl border border-slate-200 dark:border-slate-800 p-2 text-slate-500 hover:text-red-500 transition-colors"
+                  onClick={handleSignOut}
+                  className="rounded-xl border border-slate-200 dark:border-slate-800 p-2 text-slate-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all"
                   title="Sign Out"
                 >
                   <LogOut className="h-4 w-4" />
@@ -119,7 +199,7 @@ export function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className="text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-primary-500 transition-colors"
+                className="text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-primary-500 transition-colors ml-2"
               >
                 Sign In
               </Link>
