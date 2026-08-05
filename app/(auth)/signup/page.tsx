@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { UserPlus, ArrowLeft, CheckCircle2, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { UserPlus, ArrowLeft, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { signupAction } from "@/app/auth/actions";
 
@@ -25,8 +26,8 @@ const signupSchema = z
 type SignupFormData = z.infer<typeof signupSchema>;
 
 export default function SignupPage() {
+  const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -39,7 +40,6 @@ export default function SignupPage() {
 
   const onSubmit = async (data: SignupFormData) => {
     setServerError(null);
-    setSuccessMessage(null);
 
     const formData = new FormData();
     formData.append("email", data.email);
@@ -52,7 +52,10 @@ export default function SignupPage() {
     if (res?.error) {
       setServerError(res.error);
     } else if (res?.success) {
-      setSuccessMessage(res.message);
+      // Email confirmation is OFF, so the user is instantly logged in!
+      // Redirect them straight to the homepage (or dashboard)
+      router.push("/");
+      router.refresh();
     }
   };
 
@@ -88,114 +91,96 @@ export default function SignupPage() {
           </div>
         )}
 
-        {successMessage ? (
-          <div className="rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 p-6 border border-emerald-200 dark:border-emerald-900/50 text-center space-y-3">
-            <CheckCircle2 className="h-10 w-10 text-emerald-500 mx-auto" />
-            <h3 className="font-semibold text-sm text-emerald-900 dark:text-emerald-200">
-              Registration Complete
-            </h3>
-            <p className="text-xs text-emerald-700 dark:text-emerald-400 leading-relaxed">
-              {successMessage}
-            </p>
-            <Link
-              href="/login"
-              className="inline-block rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-500 transition-colors"
-            >
-              Proceed to Login
-            </Link>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+              Full Name *
+            </label>
+            <input
+              {...register("fullName")}
+              type="text"
+              placeholder="Ananda Das"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            {errors.fullName && (
+              <p className="text-xs text-red-500 mt-1">{errors.fullName.message}</p>
+            )}
           </div>
-        ) : (
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Full Name *
-              </label>
-              <input
-                {...register("fullName")}
-                type="text"
-                placeholder="Ananda Das"
-                className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
-              {errors.fullName && (
-                <p className="text-xs text-red-500 mt-1">{errors.fullName.message}</p>
-              )}
-            </div>
 
-            <div>
-              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Email Address *
-              </label>
-              <input
-                {...register("email")}
-                type="email"
-                placeholder="ananda@example.com"
-                className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
-              {errors.email && (
-                <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>
-              )}
-            </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+              Email Address *
+            </label>
+            <input
+              {...register("email")}
+              type="email"
+              placeholder="ananda@example.com"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            {errors.email && (
+              <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>
+            )}
+          </div>
 
-            <div>
-              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Phone Number (Optional)
-              </label>
-              <input
-                {...register("phone")}
-                type="tel"
-                placeholder="+880 1700-000000"
-                className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
-            </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+              Phone Number (Optional)
+            </label>
+            <input
+              {...register("phone")}
+              type="tel"
+              placeholder="+880 1700-000000"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+          </div>
 
-            <div>
-              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Password *
-              </label>
-              <div className="relative">
-                <input
-                  {...register("password")}
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 pr-10 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              </div>
-              {errors.password && (
-                <p className="text-xs text-red-500 mt-1">{errors.password.message}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Confirm Password *
-              </label>
+          <div>
+            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+              Password *
+            </label>
+            <div className="relative">
               <input
-                {...register("confirmPassword")}
-                type="password"
+                {...register("password")}
+                type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
-                className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 pr-10 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
-              {errors.confirmPassword && (
-                <p className="text-xs text-red-500 mt-1">{errors.confirmPassword.message}</p>
-              )}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
             </div>
+            {errors.password && (
+              <p className="text-xs text-red-500 mt-1">{errors.password.message}</p>
+            )}
+          </div>
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full rounded-xl bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white shadow-glow hover:bg-primary-500 active:scale-95 transition-all disabled:opacity-50"
-            >
-              {isSubmitting ? "Creating Account..." : "Sign Up"}
-            </button>
-          </form>
-        )}
+          <div>
+            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+              Confirm Password *
+            </label>
+            <input
+              {...register("confirmPassword")}
+              type="password"
+              placeholder="••••••••"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            {errors.confirmPassword && (
+              <p className="text-xs text-red-500 mt-1">{errors.confirmPassword.message}</p>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full rounded-xl bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white shadow-glow hover:bg-primary-500 active:scale-95 transition-all disabled:opacity-50"
+          >
+            {isSubmitting ? "Creating Account..." : "Sign Up"}
+          </button>
+        </form>
 
         <div className="text-center text-xs text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-200 dark:border-slate-800">
           Already have an account?{" "}
