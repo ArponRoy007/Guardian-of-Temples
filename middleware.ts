@@ -14,7 +14,8 @@ export async function middleware(request: NextRequest) {
         getAll() {
           return request.cookies.getAll();
         },
-        setAll(cookiesToSet) {
+        // ADDED: Explicit type for cookiesToSet to fix Vercel build
+        setAll(cookiesToSet: { name: string; value: string; options?: any }[]) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
           supabaseResponse = NextResponse.next({
             request,
@@ -59,8 +60,8 @@ export async function middleware(request: NextRequest) {
 
     const role = profile?.role ?? "user";
 
-    // Moderator path protection (/moderator/*)
-    if (isModeratorPath && role !== "moderator" && role !== "admin") {
+    // ADDED: Changed "moderator" to "verifier" to match your DB schema
+    if (isModeratorPath && role !== "verifier" && role !== "admin") {
       return NextResponse.redirect(new URL("/not-authorized", request.url));
     }
 
