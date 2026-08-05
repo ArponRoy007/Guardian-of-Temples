@@ -8,7 +8,7 @@ import { UserProfile, SeverityLevel } from "@/types";
 interface AuthContextType {
   user: User | null;
   profile: UserProfile | null;
-  role: "user" | "moderator" | "admin" | null;
+  role: "admin" | "verifier" | "reporter" | null;
   loading: boolean;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
