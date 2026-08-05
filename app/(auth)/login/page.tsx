@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Lock, ArrowLeft, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -63,7 +64,7 @@ function LoginContent() {
 
       if (role === "admin") {
         router.push("/admin");
-      } else if (role === "verifier") { // Updated from moderator to match database
+      } else if (role === "moderator" || role === "verifier") {
         router.push("/moderator");
       } else {
         router.push("/");
@@ -181,7 +182,7 @@ export default function LoginPage() {
     <Suspense 
       fallback={
         <div className="min-h-[85vh] flex items-center justify-center p-4">
-          <div className="text-sm text-slate-500">Loading secure login...</div>
+          <LoadingSpinner label="Loading secure authentication..." />
         </div>
       }
     >

@@ -1,12 +1,13 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { BangladeshMap } from "@/components/map/BangladeshMap";
 import { SafetyVerdictBadge } from "@/components/ui/SafetyVerdictBadge";
 import { SearchBar } from "@/components/search/SearchBar";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import {
   Search,
   MapPin,
@@ -48,7 +49,7 @@ interface IncidentHistory {
   description: string;
 }
 
-export default function SearchResultsPage() {
+function SearchContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
 
@@ -130,7 +131,7 @@ export default function SearchResultsPage() {
           );
         }
 
-        // 3. Mock Approved Incident History matching search term
+        // 3. Approved Incident History matching search term
         if (searchTerm.length >= 2) {
           setIncidentHistory([
             {
@@ -166,7 +167,7 @@ export default function SearchResultsPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6">
-      {/* Top Header & Search Bar Bar */}
+      {/* Top Header & Search Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
         <div className="flex items-center gap-3">
           <Link
@@ -193,10 +194,7 @@ export default function SearchResultsPage() {
       {/* Loading Skeleton State */}
       {loading && (
         <div className="rounded-3xl glass-card p-12 text-center space-y-4">
-          <Loader2 className="h-8 w-8 text-primary-500 animate-spin mx-auto" />
-          <p className="text-xs font-semibold text-slate-600 dark:text-slate-300">
-            Searching database for matching districts, temples, and incident records...
-          </p>
+          <LoadingSpinner label="Searching database for matching districts, temples, and incident records..." />
         </div>
       )}
 
@@ -397,5 +395,22 @@ export default function SearchResultsPage() {
         </>
       )}
     </div>
+  );
+}
+
+// Default export wrapping SearchContent in a Suspense boundary for Next.js build compliance
+export default function SearchResultsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+          <div className="glass-card rounded-3xl p-12 text-center border border-slate-200 dark:border-slate-800">
+            <LoadingSpinner label="Initializing Guardian of Temples search index..." />
+          </div>
+        </div>
+      }
+    >
+      <SearchContent />
+    </Suspense>
   );
 }
