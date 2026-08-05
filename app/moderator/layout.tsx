@@ -25,7 +25,13 @@ export default async function ModeratorLayout({
     .eq("id", user.id)
     .single();
 
-  if (!profile || (profile.role !== "moderator" && profile.role !== "admin")) {
+  // FIX: Ensure this perfectly matches the middleware.ts logic
+  if (
+    !profile ||
+    (profile.role !== "moderator" && 
+     profile.role !== "verifier" && 
+     profile.role !== "admin")
+  ) {
     redirect("/not-authorized");
   }
 

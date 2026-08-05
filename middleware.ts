@@ -60,8 +60,8 @@ export async function middleware(request: NextRequest) {
 
     const role = profile?.role ?? "user";
 
-    // ADDED: Changed "moderator" to "verifier" to match your DB schema
-    if (isModeratorPath && role !== "verifier" && role !== "admin") {
+    // FIX: Re-added "moderator" to the allowed roles to match the DB
+    if (isModeratorPath && role !== "moderator" && role !== "verifier" && role !== "admin") {
       return NextResponse.redirect(new URL("/not-authorized", request.url));
     }
 
