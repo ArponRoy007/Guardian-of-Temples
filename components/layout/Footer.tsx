@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Logo } from "@/components/ui/Logo";
-import { X, ShieldCheck, FileText } from "lucide-react";
+import { X, ShieldCheck, FileText, Smartphone } from "lucide-react";
 
 export function Footer() {
   const [activeModal, setActiveModal] = useState<"privacy" | "terms" | null>(null);
@@ -43,6 +43,18 @@ export function Footer() {
 
           <div className="flex flex-col items-center md:items-end gap-3">
             <div className="flex items-center gap-3 text-[12px] font-bold text-slate-700 dark:text-slate-300">
+              {/* DOWNLOAD APK BUTTON */}
+              <a
+                href="/Guardian-of-Temples.apk"
+                download="Guardian-of-Temples.apk"
+                className="relative z-[100] flex items-center gap-1.5 text-white bg-primary-600 hover:bg-primary-700 cursor-pointer px-3 py-2 rounded-lg active:scale-95 transition-all shadow-sm font-semibold"
+              >
+                <Smartphone className="h-4 w-4" />
+                <span>Get App (APK)</span>
+              </a>
+
+              <span className="text-slate-300 dark:text-slate-700">•</span>
+
               {/* BUTTON FIX: Added z-[100] directly to the buttons to ensure clickability */}
               <button
                 type="button"
