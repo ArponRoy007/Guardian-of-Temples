@@ -65,8 +65,10 @@ export interface Incident {
 
 export interface UserProfile {
   id: string;
-  email: string;
-  fullName?: string;
-  role: "admin" | "verifier" | "reporter";
-  createdAt: string;
+  email?: string;
+  full_name?: string;
+  phone?: string;
+  role: "user" | "temple_admin" | "moderator" | "admin" | "verifier" | "reporter";
+  linked_temple_id?: string | null;
+  created_at?: string;
 }

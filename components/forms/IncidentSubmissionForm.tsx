@@ -5,25 +5,22 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { submitIncidentAction } from "@/app/submit-incident/actions";
 import { useDebounce } from "@/lib/hooks/useDebounce";
+import { ImageUploader } from "@/components/ui/ImageUploader";
+import { CloudinaryUploadResult } from "@/lib/cloudinary/uploadImage";
 import {
   ShieldAlert,
   Church,
-  MapPin,
-  Calendar,
   Flame,
   AlertTriangle,
   Home,
   UserX,
-  FileText,
-  Upload,
-  X,
   CheckCircle2,
   Loader2,
   HelpCircle,
-  PhoneCall,
   ArrowRight,
 } from "lucide-react";
 
@@ -71,11 +68,8 @@ export function IncidentSubmissionForm() {
   const [isUnlisted, setIsUnlisted] = useState(false);
   const [templeDropdownOpen, setTempleDropdownOpen] = useState(false);
 
-  // File Upload State
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [previews, setPreviews] = useState<string[]>([]);
-  const [uploadingImages, setUploadingImages] = useState(false);
-  const [fileError, setFileError] = useState<string | null>(null);
+  // Cloudinary Uploaded Evidence State
+  const [uploadedEvidence, setUploadedEvidence] = useState<CloudinaryUploadResult[]>([]);
 
   // Status & Feedback State
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -102,6 +96,9 @@ export function IncidentSubmissionForm() {
   const descriptionValue = watch("description") || "";
   const currentIncidentType = watch("incidentType");
 
+  const searchParams = useSearchParams();
+  const initialTempleId = searchParams?.get("templeId") || searchParams?.get("temple");
+
   // Fetch 64 Districts for Select Dropdown
   useEffect(() => {
     async function loadDistricts() {
@@ -116,6 +113,27 @@ export function IncidentSubmissionForm() {
     }
     loadDistricts();
   }, []);
+
+  // Pre-select temple from URL search query param if present
+  useEffect(() => {
+    async function loadPreselectedTemple() {
+      if (!initialTempleId) return;
+      const { data } = await supabase
+        .from("temples")
+        .select("id, name, district_id")
+        .eq("id", initialTempleId)
+        .single();
+
+      if (data) {
+        setSelectedTemple(data);
+        setTempleSearch(data.name);
+        setValue("templeId", data.id);
+        setValue("templeNameRaw", data.name);
+        setValue("districtId", data.district_id);
+      }
+    }
+    loadPreselectedTemple();
+  }, [initialTempleId]);
 
   // Debounced Temple Autocomplete Query
   useEffect(() => {
@@ -140,82 +158,12 @@ export function IncidentSubmissionForm() {
     searchTemples();
   }, [debouncedTempleQuery, isUnlisted]);
 
-  // Image Upload Handlers
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFileError(null);
-    if (!e.target.files?.length) return;
-
-    const files = Array.from(e.target.files);
-    if (selectedFiles.length + files.length > 3) {
-      setFileError("Maximum 3 evidence photos allowed");
-      return;
-    }
-
-    const validFiles: File[] = [];
-    const newPreviews: string[] = [];
-
-    for (const file of files) {
-      if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-        setFileError(`Invalid file format: ${file.name}. Only JPG, PNG, WEBP allowed.`);
-        return;
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        setFileError(`File exceeds 5MB limit: ${file.name}`);
-        return;
-      }
-      validFiles.push(file);
-      newPreviews.push(URL.createObjectURL(file));
-    }
-
-    setSelectedFiles((prev) => [...prev, ...validFiles]);
-    setPreviews((prev) => [...prev, ...newPreviews]);
-  };
-
-  const handleRemoveFile = (index: number) => {
-    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
-    setPreviews((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  // Upload Files to Supabase Storage Bucket
-  const uploadPhotosToStorage = async (): Promise<string[]> => {
-    if (!selectedFiles.length) return [];
-    setUploadingImages(true);
-
-    const uploadedUrls: string[] = [];
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    for (const file of selectedFiles) {
-      const fileExt = file.name.split(".").pop();
-      const filePath = `${user?.id || "anon"}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("incident-evidence")
-        .upload(filePath, file);
-
-      if (uploadError) {
-        console.error("Storage upload error:", uploadError.message);
-        continue;
-      }
-
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("incident-evidence").getPublicUrl(filePath);
-
-      uploadedUrls.push(publicUrl);
-    }
-
-    setUploadingImages(false);
-    return uploadedUrls;
-  };
-
   // Form Submit Handler
   const onSubmit = async (data: ClientFormData) => {
     setSubmitError(null);
 
-    // Upload evidence photos if any
-    const evidenceUrls = await uploadPhotosToStorage();
+    const evidenceUrls = uploadedEvidence.map((item) => item.url);
+    const cloudinaryPublicIds = uploadedEvidence.map((item) => item.publicId);
 
     const serverPayload = {
       districtId: Number(data.districtId),
@@ -225,6 +173,7 @@ export function IncidentSubmissionForm() {
       incidentType: data.incidentType,
       description: data.description,
       evidenceUrls,
+      cloudinaryPublicIds,
       submitterContact: data.submitterContact || undefined,
     };
 
@@ -472,43 +421,14 @@ export function IncidentSubmissionForm() {
         )}
       </div>
 
-      {/* 6. Photo Uploads */}
-      <div className="space-y-2">
-        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
-          Upload Evidence Photos (Optional, Max 3, 5MB each)
-        </label>
-
-        {fileError && <p className="text-xs text-red-500">{fileError}</p>}
-
-        <div className="flex flex-wrap items-center gap-3">
-          {previews.map((url, index) => (
-            <div key={index} className="relative h-20 w-20 rounded-xl overflow-hidden border border-slate-300 dark:border-slate-700">
-              <img src={url} alt="Evidence thumbnail" className="h-full w-full object-cover" />
-              <button
-                type="button"
-                onClick={() => handleRemoveFile(index)}
-                className="absolute top-1 right-1 rounded-full bg-slate-900/80 p-1 text-white hover:bg-red-600 transition-colors"
-              >
-                <X className="h-3 w-3" />
-              </button>
-            </div>
-          ))}
-
-          {selectedFiles.length < 3 && (
-            <label className="flex h-20 w-20 flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-400 hover:border-primary-500 hover:text-primary-500 cursor-pointer transition-colors">
-              <Upload className="h-5 w-5 mb-1" />
-              <span className="text-[10px] font-semibold">Add Photo</span>
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                onChange={handleFileSelect}
-                multiple
-                className="hidden"
-              />
-            </label>
-          )}
-        </div>
-      </div>
+      {/* 6. Photo Uploads using Reusable ImageUploader */}
+      <ImageUploader
+        folder="incident-evidence"
+        maxImages={3}
+        label="Upload Evidence Photos (Optional, Max 3, 5MB each)"
+        helperText="Images are automatically compressed and securely stored via Cloudinary."
+        onUploadComplete={(results) => setUploadedEvidence(results)}
+      />
 
       {/* 7. Submitter Optional Contact Info */}
       <div>
@@ -528,13 +448,13 @@ export function IncidentSubmissionForm() {
       {/* Submit Action Button */}
       <button
         type="submit"
-        disabled={isSubmitting || uploadingImages}
+        disabled={isSubmitting}
         className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary-600 px-4 py-3 text-sm font-semibold text-white shadow-glow hover:bg-primary-500 active:scale-95 transition-all disabled:opacity-50"
       >
-        {isSubmitting || uploadingImages ? (
+        {isSubmitting ? (
           <>
             <Loader2 className="h-4 w-4 animate-spin" />
-            <span>Submitting Report & Evidence...</span>
+            <span>Submitting Report...</span>
           </>
         ) : (
           <>

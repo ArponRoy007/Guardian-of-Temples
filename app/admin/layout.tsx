@@ -10,6 +10,8 @@ import {
   PhoneCall,
   User,
   Sliders,
+  UserCheck,
+  ShieldAlert,
 } from "lucide-react";
 
 export default async function AdminLayout({
@@ -38,11 +40,24 @@ export default async function AdminLayout({
     redirect("/not-authorized");
   }
 
+  // 2. Fetch Pending Temple Admin Requests Count for Badge
+  const { count: pendingRequestsCount } = await supabase
+    .from("temple_admin_requests")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "pending");
+
   const displayName = profile.full_name || user.email?.split("@")[0] || "Administrator";
 
   const navLinks = [
     { name: "Overview", href: "/admin", icon: LayoutDashboard },
     { name: "All Submissions", href: "/admin/submissions", icon: FileText },
+    {
+      name: "Temple Admin Requests",
+      href: "/admin/temple-requests",
+      icon: UserCheck,
+      count: pendingRequestsCount,
+    },
+    { name: "Removed Posts", href: "/admin/removed-posts", icon: ShieldAlert },
     { name: "Moderators", href: "/admin/moderators", icon: ShieldCheck },
     { name: "Users", href: "/admin/users", icon: Users },
     { name: "Manage Temples", href: "/admin/temples", icon: Church },
@@ -87,6 +102,11 @@ export default async function AdminLayout({
               >
                 <Icon className="h-4 w-4 text-slate-500 dark:text-slate-400" />
                 <span>{link.name}</span>
+                {typeof link.count === "number" && link.count > 0 && (
+                  <span className="rounded-full bg-amber-500 text-white px-2 py-0.5 text-[10px] font-extrabold shadow-xs">
+                    {link.count}
+                  </span>
+                )}
               </Link>
             );
           })}

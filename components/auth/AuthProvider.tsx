@@ -8,7 +8,7 @@ import { UserProfile, SeverityLevel } from "@/types";
 interface AuthContextType {
   user: User | null;
   profile: UserProfile | null;
-  role: "admin" | "verifier" | "reporter" | null;
+  role: "user" | "temple_admin" | "moderator" | "admin" | "verifier" | "reporter" | null;
   loading: boolean;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -33,7 +33,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const { data, error } = await supabase
         .from("profiles")
-        .select("id, full_name, phone, role, created_at")
+        .select("id, full_name, phone, role, linked_temple_id, created_at")
         .eq("id", userId)
         .single();
 

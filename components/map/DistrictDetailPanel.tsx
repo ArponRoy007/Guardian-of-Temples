@@ -145,9 +145,12 @@ export function DistrictDetailPanel({ district, onClose }: DistrictDetailPanelPr
                   className="rounded-xl bg-slate-50 dark:bg-slate-900 p-3 border border-slate-200 dark:border-slate-800 space-y-1.5"
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <p className="font-semibold text-xs text-slate-800 dark:text-slate-200">
+                    <Link
+                      href={`/temple/${temple.id}`}
+                      className="font-semibold text-xs text-slate-800 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 hover:underline transition-colors"
+                    >
                       {temple.name}
-                    </p>
+                    </Link>
                     {temple.is_verified === false && <UnverifiedBadge />}
                   </div>
                   <div className="flex items-center justify-between text-[11px] text-slate-500">

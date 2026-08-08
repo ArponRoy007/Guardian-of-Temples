@@ -3,15 +3,20 @@
   <img src="public/favicon.svg" width="90" alt="Guardian of Temples Logo" />
 
   # Guardian of Temples
-  ### *Protecting Sacred Spaces, Informing Safe Journeys*
 
-  A mobile-first incident visualization and safety portal mapping incidents affecting Hindu temples across Bangladesh during Durga Puja.
+  ### *Celebrating festivals together, keeping our temples informed and safe.*
 
-  [![Next.js](https://img.shields.io/badge/Next.js-14.2_App_Router-black?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
-  [![Supabase](https://img.shields.io/badge/Supabase-Database_%26_Auth-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
-  [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4_Styling-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+  A full-stack, mobile-first social + safety platform for Hindu temples across Bangladesh — combining a verified-community photo feed with a transparent, moderated incident-awareness map covering all 64 districts.
+
+  [![Next.js](https://img.shields.io/badge/Next.js-14_App_Router-black?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+  [![Supabase](https://img.shields.io/badge/Supabase-Postgres_%26_Auth-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-Styling-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+  [![Cloudinary](https://img.shields.io/badge/Cloudinary-Media_Pipeline-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)](https://cloudinary.com/)
   [![Vercel](https://img.shields.io/badge/Vercel-Deployment-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
   [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+
+  [**Live Demo**](#) · [**Report an Issue**](#)
 
 </div>
 
@@ -19,110 +24,154 @@
 
 ## 🏛️ About the Project
 
-**Guardian of Temples** is a crisis mapping and safety platform designed to document, verify, and visualize incidents affecting sacred sites in Bangladesh's 64 districts. Built during heightened vulnerabilities around major festival periods such as Durga Puja, the application assists devotees in planning safe journeys while equipping community leaders, journalists, and law enforcement with empirical data and verified audit trails.
+**Guardian of Temples** is a full-stack platform I designed and built end-to-end, serving two connected purposes:
 
-The application combines public reporting, multi-tier moderation workflows, organic dataset expansion using PostgreSQL fuzzy matching, and rapid tap-to-call emergency helplines.
+1. **A community feed** where verified temple committees post daily photo updates and festival highlights — giving every temple in Bangladesh a public, trusted presence, much like a dedicated page for their community.
+2. **A safety information layer** — an interactive map and search tool covering all 64 districts, built on a transparent, human-moderated pipeline for reporting and verifying temple-related incidents, so visitors can stay informed and authorities have access to organized, verified data.
+
+The project models a real production system: four distinct user roles, a full moderation and audit pipeline, role-based access control enforced at both the application and database layer, and a media pipeline built for scale on a free-tier budget.
 
 ---
 
 ## ✨ Key Features
 
-- 🗺️ **Interactive District Choropleth Map**: Real-time incident density map of all 64 Bangladesh districts featuring custom SVG rendering, safety level assessments, and district detail panels.
-- 📥 **CSV Bulk Temple Import Engine**: Powerful admin tooling to import thousands of verified temple records from CSV files with automatic `name + district_id` duplicate suppression.
-- 🌱 **Organic Temple Auto-Creation**: Uses PostgreSQL `pg_trgm` trigram similarity matching to link incident reports to existing temples or auto-create unverified temple records when users report new sites.
-- 📞 **Tap-to-Call Emergency Helpline Portal**: Instant public access to national emergency hotlines (999, Police Control Room, Legal Aid, Human Rights Commission) with mobile `tel:` links and district filtering.
-- 🛡️ **Role-Based Moderation & Admin Control Center**: Multi-tier security (`user`, `moderator`, `admin`) protecting verification queues, audit logs, temple CRUD managers, and administrative status overrides.
-- 📱 **Mobile-First App Architecture**: Built for phone viewports with a 5-target bottom navigation bar (`MobileBottomNav`), safe-area inset support, and dark/light theme switching.
+### Community & Content
+- 📸 **Temple Feed** — a Facebook-style feed where verified Temple Admins post photo updates; visitors browse and react (🙏 ❤️ 🌺) with reactions-only engagement (no comments/shares) by design, keeping the space calm and low-moderation-risk.
+- 🏛️ **Temple Profile Pages** — dynamic per-temple pages with cover info, post history, verification badge, and direct links into that temple's safety data.
+- 🔔 **Real-time Notifications** — in-app notification system (DB-trigger-driven) alerting Temple Admins to moderation actions and verification decisions.
+
+### Safety & Trust
+- 🗺️ **Interactive District Choropleth Map** — custom SVG rendering of all 64 districts with a graduated color scale reflecting verified incident density, tap-to-expand detail panels, and district-level safety verdicts.
+- 🔍 **Unified Search** — fuzzy search across districts and temples with live autocomplete, routing users to either safety data or a temple's public profile.
+- 🌱 **Organic Dataset Growth** — new temples reported via incidents are auto-linked or auto-created using PostgreSQL `pg_trgm` trigram similarity matching, flagged `unverified` until admin review.
+- 📞 **Emergency Helpline Directory** — tap-to-call access to national emergency numbers, filterable by district.
+
+### Trust & Safety Infrastructure
+- 🛡️ **Four-Tier Role System** — `user`, `temple_admin`, `moderator`, `admin`, each with distinct permissions enforced via Next.js middleware **and** Postgres Row-Level Security (defense in depth, not UI-only gating).
+- ✅ **Verification Workflows** — a full request → review → approve/reject pipeline for both incident reports and Temple Admin identity claims, with required reasons on rejection and a permanent audit log.
+- 🗑️ **Dual-Path Moderation** — Temple Admins can self-remove their own posts (no reason required); Moderators/Admins can take down any post with a mandatory, logged, notified reason — two intentionally separate code paths to prevent privilege overlap.
+- 📊 **Admin Control Center** — dashboards for incident oversight, moderator activity auditing, temple CRUD + bulk CSV import, and full submission history.
+
+### Platform Engineering
+- 📱 **Mobile-First & PWA-Ready** — installable PWA with a native Android APK build, safe-area-aware layouts, and a role-aware bottom navigation bar.
+- 🌗 **Dark / Light Mode** — theme-consistent across every route, including dynamically rendered content.
+- 🖼️ **Cloudinary Media Pipeline** — signed, server-validated uploads (type/size enforced server-side) with automatic compression and format optimization for every image surface in the app.
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology | Function |
+| Layer | Technology | Purpose |
 | :--- | :--- | :--- |
-| **Framework** | Next.js 14 (App Router, TypeScript) | React framework with Server Components & Server Actions |
-| **Styling** | Tailwind CSS + `next-themes` | Glassmorphism UI design system & dark/light mode toggle |
-| **Database** | PostgreSQL + Supabase DB | Relational database with `pg_trgm` fuzzy similarity search |
-| **Authentication** | Supabase Auth (`@supabase/ssr`) | Cookie-based session handling with Row-Level Security (RLS) |
-| **Storage** | Supabase Storage | Public bucket storage for uploaded incident photo evidence |
-| **Icons** | Lucide React | Modern geometric UI icons |
+| **Framework** | Next.js 14 (App Router, TypeScript, Server Actions) | Full-stack React framework, server-first data flow |
+| **Database** | PostgreSQL via Supabase | Relational schema with RLS, triggers, and `pg_trgm` fuzzy matching |
+| **Auth** | Supabase Auth (`@supabase/ssr`) | Cookie-based sessions, role-based middleware guards |
+| **Media** | Cloudinary | Signed uploads, auto-compression, format optimization |
+| **Styling** | Tailwind CSS + `next-themes` | Design-token-driven UI, dark/light theming |
+| **Icons** | Lucide React | Consistent iconography |
+| **Hosting** | Vercel | CI/CD deployment |
+| **Mobile** | PWA + Capacitor (Android APK) | Cross-platform distribution |
+
+---
+
+## 🧱 Architecture Highlights
+
+*(Notes for reviewers on some of the more interesting engineering decisions in this project)*
+
+- **Defense-in-depth authorization**: every privileged Server Action re-verifies the caller's role and ownership server-side — client-side role checks are treated as UX only, never as the security boundary. RLS policies independently enforce the same rules at the database layer.
+- **Transactional integrity on multi-step approvals**: Temple Admin approval (which creates a temple record *and* updates a user's role *and* closes a request) is wrapped in a single transaction, with an explicit guard against double-approval race conditions.
+- **Separation of moderation concerns**: self-deletion and moderator takedown are deliberately distinct code paths with different data trails (soft-delete only vs. soft-delete + audit log + notification), rather than one action gated by role checks — reducing the chance of a permissions bug crossing the two.
+- **Cursor-based pagination** on the feed and notifications for performant infinite scroll, versus offset pagination which degrades at scale.
 
 ---
 
 ## 🚀 Getting Started
 
-Follow these steps to set up **Guardian of Temples** locally:
+### Prerequisites
+- Node.js `v18.17.0+`
+- npm / yarn / pnpm
+- A Supabase project
+- A Cloudinary account (free tier)
 
-### 1. Prerequisites
-- **Node.js**: `v18.17.0` or higher
-- **npm** or **yarn** / **pnpm**
-- A **Supabase** project instance
+### Setup
 
-### 2. Clone Repository & Install Dependencies
 ```bash
 git clone https://github.com/your-username/guardian-of-temples.git
 cd guardian-of-temples
 npm install
 ```
 
-### 3. Configure Environment Variables
-Create a `.env.local` file in the root directory and add your Supabase credentials:
+Create `.env.local`:
 
 ```env
-# Supabase Configuration
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
 ```
 
-### 4. Database Migrations
-Apply the PostgreSQL migration files located in `supabase/migrations/` sequentially via your Supabase SQL Editor:
-1. `001_initial_schema.sql`
-2. `002_rls_policies.sql`
-3. `003_incident_counts_view.sql`
-4. `004_add_temple_name_raw_and_storage.sql`
-5. `005_admin_features.sql`
-6. `006_temple_auto_add.sql`
-7. `007_seed_helplines.sql`
+Run migrations sequentially from `supabase/migrations/` in the Supabase SQL Editor, then:
 
-### 5. Launch Development Server
 ```bash
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+Visit [http://localhost:3000](http://localhost:3000).
+
+### Seeding sample data
+
+```bash
+# Bulk-import official temple records from CSV
+npx tsx scripts/import-temples.ts public/data/temples_import_template.csv
+
+# Seed test accounts (dev/staging only — see script header)
+npx tsx scripts/seed-test-users.ts
+```
 
 ---
 
-## 📊 Database Seeding via CLI
+## 📂 Project Structure
 
-You can seed thousands of official temple records directly from a local CSV file using the standalone TypeScript seed script:
-
-```bash
-# Seed official temple list from CSV using tsx
-npx tsx scripts/import-temples.ts public/data/temples_import_template.csv
-```
-
-The CLI script automatically normalizes district names, checks for existing records, suppresses duplicate entries, and outputs an import summary table to the console.
+app/
+├── (auth)/ # Login, signup, password reset
+├── temple-feed/ # Home feed + post creation
+├── temple/[templeId]/ # Public temple profile pages
+├── safety-map/ # District choropleth map
+├── search/ # Unified district/temple search
+├── submit-incident/ # Incident reporting flow
+├── moderator/ # Moderator dashboard
+├── admin/ # Admin control center
+└── helpline/ # Emergency contacts
+components/
+├── feed/ # Post cards, reactions, moderation UI
+├── map/ # Choropleth map + district panels
+├── forms/ # Validated submission forms
+└── ui/ # Shared design system components
+lib/
+├── supabase/ # Client/server Supabase instances
+├── cloudinary/ # Upload utilities
+└── queries/ # Reusable data-fetching logic
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these guidelines:
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Commit your changes
+4. Push and open a Pull Request
 
 ---
 
 ## 📄 License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the MIT License. See `LICENSE` for details.
 
 ---
 
 <div align="center">
-  <sub>Built with care for public safety and sacred heritage preservation in Bangladesh.</sub>
+  <sub>Designed & built solo — a full-stack case study in role-based access control, moderation systems, and community platform design.</sub>
 </div>

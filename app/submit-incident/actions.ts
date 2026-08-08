@@ -24,6 +24,7 @@ const serverSubmissionSchema = z.object({
     .min(20, "Description must be at least 20 characters")
     .max(2000, "Description cannot exceed 2000 characters"),
   evidenceUrls: z.array(z.string().url()).max(3, "Maximum 3 evidence images allowed").optional(),
+  cloudinaryPublicIds: z.array(z.string()).optional(),
   submitterContact: z.string().optional(),
 });
 
@@ -99,6 +100,10 @@ export async function submitIncidentAction(inputData: ServerSubmissionInput) {
       ? validatedData.evidenceUrls.join(",")
       : null;
 
+    const primaryPublicIds = validatedData.cloudinaryPublicIds?.length
+      ? validatedData.cloudinaryPublicIds.join(",")
+      : null;
+
     // Perform Supabase Database Insert
     const { data, error: insertError } = await supabase
       .from("incidents")
@@ -110,6 +115,7 @@ export async function submitIncidentAction(inputData: ServerSubmissionInput) {
         incident_type: validatedData.incidentType,
         description: validatedData.description,
         evidence_url: primaryEvidenceUrl,
+        cloudinary_public_id: primaryPublicIds,
         submitter_contact: validatedData.submitterContact || null,
         moderation_note: autoMatchNote,
         status: "pending",

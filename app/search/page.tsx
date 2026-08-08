@@ -276,21 +276,27 @@ function SearchContent() {
                     {matchedTemples.map((temple) => (
                       <div
                         key={temple.id}
-                        className="glass-card rounded-2xl p-4 space-y-2 border border-slate-200 dark:border-slate-800"
+                        className="glass-card rounded-2xl p-4 space-y-3 border border-slate-200 dark:border-slate-800"
                       >
-                        <h4 className="font-semibold text-xs text-slate-900 dark:text-slate-100">
-                          {temple.name}
-                        </h4>
-                        <p className="text-[11px] text-slate-500">
-                          {temple.address_text || `Location in ${matchedDistrict.name_en}`}
-                        </p>
-                        <div className="pt-1 flex items-center justify-between text-[11px]">
+                        <div>
+                          <h4 className="font-semibold text-xs text-slate-900 dark:text-slate-100">
+                            {temple.name}
+                          </h4>
+                          <p className="text-[11px] text-slate-500">
+                            {temple.address_text || `Location in ${matchedDistrict.name_en}`}
+                          </p>
+                        </div>
+
+                        <div className="pt-1 flex items-center justify-between text-[11px] border-t border-slate-100 dark:border-slate-800">
                           <span className="text-red-600 dark:text-red-400 font-medium">
                             {temple.incident_count} report(s)
                           </span>
-                          <span className="text-slate-400 flex items-center gap-1">
-                            <Calendar className="h-3 w-3" /> {temple.last_incident_date}
-                          </span>
+                          <Link
+                            href={`/temple/${temple.id}`}
+                            className="inline-flex items-center gap-1 font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
+                          >
+                            <span>View Profile & Feed →</span>
+                          </Link>
                         </div>
                       </div>
                     ))}
@@ -315,7 +321,16 @@ function SearchContent() {
                     </p>
                   </div>
 
-                  <SafetyVerdictBadge incidentCount={3} showExplanation={true} />
+                  <div className="flex flex-col items-end gap-2">
+                    <SafetyVerdictBadge incidentCount={3} showExplanation={true} />
+                    <Link
+                      href={`/temple/${matchedTemples[0].id}`}
+                      className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 text-xs font-bold shadow-glow transition-all active:scale-95"
+                    >
+                      <Church className="h-4 w-4" />
+                      <span>View Temple Page & Posts →</span>
+                    </Link>
+                  </div>
                 </div>
               </div>
 
@@ -384,7 +399,7 @@ function SearchContent() {
 
               <div className="pt-4">
                 <Link
-                  href="/"
+                  href="/safety-map"
                   className="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-5 py-2.5 text-xs font-semibold text-white shadow-glow hover:bg-primary-500 transition-all"
                 >
                   Return to Interactive Map

@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Logo } from "@/components/ui/Logo";
-import { createClient } from "@/lib/supabase/client";
+import { useAuth } from "@/lib/hooks/useAuth";
+import { PostActionSheet } from "@/components/layout/PostActionSheet";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import {
   Sun,
   Moon,
@@ -16,77 +18,41 @@ import {
   ShieldCheck,
   User as UserIcon,
   Menu,
-  X
+  X,
+  Church,
+  Home,
+  MapPin,
+  Search,
+  Sparkles,
 } from "lucide-react";
-import type { User } from "@supabase/supabase-js";
 
 export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const { theme, setTheme } = useTheme();
-  const supabase = createClient();
+  const { user, profile, role, loading: isAuthLoading, signOut } = useAuth();
 
-  // Local Auth & UI State
-  const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<any>(null);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isActionSheetOpen, setIsActionSheetOpen] = useState(false);
 
-  useEffect(() => {
-    let isMounted = true;
+  const isModerator = role === "moderator" || role === "verifier" || role === "admin";
+  const isAdmin = role === "admin";
+  const isTempleAdmin = role === "temple_admin";
 
-    // 1. Fetch initial session on mount
-    async function loadUser() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (isMounted) {
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          const { data } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", session.user.id)
-            .single();
-          setProfile(data);
-        }
-        setIsAuthLoading(false);
-      }
+  const handleActionClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    if (!user) {
+      router.push(`/login?redirectTo=${encodeURIComponent(pathname || "/submit-incident")}`);
+      return;
     }
-    loadUser();
 
-    // 2. Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (isMounted) {
-          setUser(session?.user ?? null);
-          if (session?.user) {
-            const { data } = await supabase
-              .from("profiles")
-              .select("*")
-              .eq("id", session.user.id)
-              .single();
-            setProfile(data);
-          } else {
-            setProfile(null);
-          }
-          setIsAuthLoading(false);
-        }
-      }
-    );
+    if (isTempleAdmin) {
+      setIsActionSheetOpen(true);
+      return;
+    }
 
-    return () => {
-      isMounted = false;
-      subscription.unsubscribe();
-    };
-  }, [supabase]);
-
-  // FIX: Added 'moderator' to the role check to match your database
-  const isModerator = profile?.role === "moderator" || profile?.role === "verifier" || profile?.role === "admin";
-  const isAdmin = profile?.role === "admin";
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.push("/");
-    router.refresh();
+    router.push("/submit-incident");
   };
 
   return (
@@ -103,11 +69,32 @@ export function Navbar() {
           <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-700 dark:text-slate-300">
             <Link
               href="/"
-              className={`hover:text-primary-500 transition-colors ${
-                pathname === "/" ? "text-primary-600 dark:text-primary-400 font-bold" : ""
+              className={`flex items-center gap-1.5 hover:text-indigo-500 transition-colors ${
+                pathname === "/" ? "text-indigo-600 dark:text-indigo-400 font-bold" : ""
               }`}
             >
-              Incident Map
+              <Home className="h-3.5 w-3.5" />
+              <span>Home</span>
+            </Link>
+
+            <Link
+              href="/safety-map"
+              className={`flex items-center gap-1.5 hover:text-primary-500 transition-colors ${
+                pathname.startsWith("/safety-map") ? "text-primary-600 dark:text-primary-400 font-bold" : ""
+              }`}
+            >
+              <MapPin className="h-3.5 w-3.5 text-red-500" />
+              <span>Safety Map</span>
+            </Link>
+
+            <Link
+              href="/search"
+              className={`flex items-center gap-1.5 hover:text-primary-500 transition-colors ${
+                pathname.startsWith("/search") ? "text-primary-600 dark:text-primary-400 font-bold" : ""
+              }`}
+            >
+              <Search className="h-3.5 w-3.5" />
+              <span>Search</span>
             </Link>
 
             <Link
@@ -117,18 +104,31 @@ export function Navbar() {
               }`}
             >
               <PhoneCall className="h-3.5 w-3.5 text-red-500 animate-pulse" />
-              <span>Emergency Helplines</span>
+              <span>Helplines</span>
             </Link>
 
             {user && (
-              <Link
-                href="/my-submissions"
-                className={`hover:text-primary-500 transition-colors ${
-                  pathname.startsWith("/my-submissions") ? "text-primary-600 dark:text-primary-400 font-bold" : ""
-                }`}
-              >
-                My Reports
-              </Link>
+              <>
+                <Link
+                  href="/my-submissions"
+                  className={`hover:text-primary-500 transition-colors ${
+                    pathname.startsWith("/my-submissions") ? "text-primary-600 dark:text-primary-400 font-bold" : ""
+                  }`}
+                >
+                  My Reports
+                </Link>
+
+                {!isTempleAdmin && (
+                  <Link
+                    href="/become-temple-admin"
+                    className={`hover:text-primary-500 transition-colors ${
+                      pathname.startsWith("/become-temple-admin") ? "text-primary-600 dark:text-primary-400 font-bold" : ""
+                    }`}
+                  >
+                    Become Temple Admin
+                  </Link>
+                )}
+              </>
             )}
 
             {isModerator && (
@@ -136,7 +136,7 @@ export function Navbar() {
                 href="/moderator"
                 className="inline-flex items-center gap-1 rounded-md bg-amber-100 dark:bg-amber-950/80 px-2.5 py-1 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800"
               >
-                <ShieldCheck className="h-3.5 w-3.5" /> Moderator Portal
+                <ShieldCheck className="h-3.5 w-3.5" /> Moderator
               </Link>
             )}
 
@@ -145,20 +145,29 @@ export function Navbar() {
                 href="/admin"
                 className="inline-flex items-center gap-1 rounded-md bg-red-100 dark:bg-red-950/80 px-2.5 py-1 text-red-800 dark:text-red-300 border border-red-300 dark:border-red-800"
               >
-                <Sliders className="h-3.5 w-3.5" /> Admin Control
+                <Sliders className="h-3.5 w-3.5" /> Admin
               </Link>
             )}
           </nav>
 
           {/* Action Buttons */}
           <div className="flex items-center gap-2 sm:gap-3">
-            <Link
-              href="/submit-incident"
-              className="hidden sm:inline-flex items-center gap-1.5 rounded-xl bg-primary-600 px-3.5 py-2 text-xs font-semibold text-white shadow-glow hover:bg-primary-500 active:scale-95 transition-all"
+            {/* Desktop Action Button (Role Aware) */}
+            <button
+              type="button"
+              onClick={handleActionClick}
+              className={`hidden sm:inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold text-white shadow-glow transition-all active:scale-95 ${
+                isTempleAdmin
+                  ? "bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/30"
+                  : "bg-primary-600 hover:bg-primary-500"
+              }`}
             >
               <PlusCircle className="h-4 w-4" />
-              <span>Report Incident</span>
-            </Link>
+              <span>{isTempleAdmin ? "Create Content" : "Report Incident"}</span>
+            </button>
+
+            {/* Notification Bell Icon */}
+            {user && <NotificationBell />}
 
             {/* Dark/Light Theme Toggle */}
             <button
@@ -175,23 +184,47 @@ export function Navbar() {
               <div className="h-8 w-16 animate-pulse rounded-xl bg-slate-200 dark:bg-slate-800"></div>
             ) : user ? (
               <div className="flex items-center gap-2 ml-1">
-                {/* Profile Display (Hidden on very small screens) */}
+                {/* Profile Display */}
                 <div className="hidden sm:flex items-center gap-2 pr-3 border-r border-slate-200 dark:border-slate-800">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400 font-bold text-xs uppercase shadow-sm border border-primary-200 dark:border-primary-800">
-                    {profile?.full_name ? profile.full_name.charAt(0) : <UserIcon className="h-4 w-4" />}
+                  <div className="relative">
+                    <div
+                      className={`flex h-8 w-8 items-center justify-center rounded-full font-bold text-xs uppercase shadow-sm border ${
+                        isTempleAdmin
+                          ? "bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 border-indigo-300 dark:border-indigo-700"
+                          : "bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400 border-primary-200 dark:border-primary-800"
+                      }`}
+                    >
+                      {profile?.full_name ? profile.full_name.charAt(0) : <UserIcon className="h-4 w-4" />}
+                    </div>
+
+                    {/* Temple Admin Avatar Icon Badge */}
+                    {isTempleAdmin && (
+                      <div className="absolute -bottom-1 -right-1 rounded-full bg-indigo-600 text-white p-0.5 shadow-sm" title="Verified Temple Admin">
+                        <Church className="h-2.5 w-2.5" />
+                      </div>
+                    )}
                   </div>
+
                   <div className="flex flex-col">
                     <span className="text-xs font-bold text-slate-700 dark:text-slate-200 max-w-[100px] truncate leading-tight">
                       {profile?.full_name || "User"}
                     </span>
-                    <span className="text-[10px] font-medium text-slate-400 capitalize leading-tight">
-                      {profile?.role || "Member"}
-                    </span>
+
+                    {/* Role Pill */}
+                    {isTempleAdmin ? (
+                      <span className="inline-flex items-center gap-0.5 text-[9px] font-extrabold text-indigo-600 dark:text-indigo-400 capitalize leading-tight">
+                        <Church className="h-2.5 w-2.5" /> Temple Admin
+                      </span>
+                    ) : (
+                      <span className="text-[10px] font-medium text-slate-400 capitalize leading-tight">
+                        {profile?.role || "Member"}
+                      </span>
+                    )}
                   </div>
                 </div>
 
                 <button
-                  onClick={handleSignOut}
+                  onClick={signOut}
                   className="rounded-xl border border-slate-200 dark:border-slate-800 p-2 text-slate-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all"
                   title="Sign Out"
                 >
@@ -223,9 +256,17 @@ export function Navbar() {
             <Link
               href="/"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-primary-500"
+              className="flex items-center gap-2 text-sm font-semibold text-indigo-600 dark:text-indigo-400"
             >
-              Incident Map
+              <Home className="h-4 w-4" /> Home Feed
+            </Link>
+
+            <Link
+              href="/safety-map"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-primary-500"
+            >
+              <MapPin className="h-4 w-4 text-red-500" /> Safety Map
             </Link>
             
             <Link
@@ -236,22 +277,38 @@ export function Navbar() {
               <PhoneCall className="h-4 w-4" /> Emergency Helplines
             </Link>
 
-            <Link
-              href="/submit-incident"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center gap-2 text-sm font-semibold text-primary-600 dark:text-primary-400"
+            <button
+              type="button"
+              onClick={(e) => {
+                setIsMobileMenuOpen(false);
+                handleActionClick(e);
+              }}
+              className="flex items-center gap-2 text-sm font-semibold text-primary-600 dark:text-primary-400 w-full text-left"
             >
-              <PlusCircle className="h-4 w-4" /> Report Incident
-            </Link>
+              <PlusCircle className="h-4 w-4" />
+              <span>{isTempleAdmin ? "Create Content" : "Report Incident"}</span>
+            </button>
 
             {user && (
-              <Link
-                href="/my-submissions"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-primary-500"
-              >
-                My Reports
-              </Link>
+              <>
+                <Link
+                  href="/my-submissions"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-primary-500"
+                >
+                  My Reports
+                </Link>
+
+                {!isTempleAdmin && (
+                  <Link
+                    href="/become-temple-admin"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block text-sm font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-500"
+                  >
+                    Become Temple Admin
+                  </Link>
+                )}
+              </>
             )}
 
             {isModerator && (
@@ -276,6 +333,12 @@ export function Navbar() {
           </div>
         )}
       </header>
+
+      {/* Role-Aware Action Sheet for Desktop & Mobile */}
+      <PostActionSheet
+        isOpen={isActionSheetOpen}
+        onClose={() => setIsActionSheetOpen(false)}
+      />
     </>
   );
 }

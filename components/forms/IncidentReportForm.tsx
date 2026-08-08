@@ -1,5 +1,6 @@
 "use client";
 
+import { ImageUploader } from "@/components/ui/ImageUploader";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -65,6 +66,22 @@ export function IncidentReportForm() {
         {errors.title && <p className="text-xs text-red-500 mt-1">{errors.title.message}</p>}
       </div>
 
+      {/* --- ADDED INCIDENT DATE INPUT HERE --- */}
+      <div>
+        <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+          Date & Time of Incident *
+        </label>
+        <input
+          type="datetime-local"
+          {...register("incidentDate")}
+          max={new Date().toISOString().slice(0, 16)}
+          suppressHydrationWarning // Fixes the mismatch error!
+          className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary-500"
+        />
+        {errors.incidentDate && <p className="text-xs text-red-500 mt-1">{errors.incidentDate.message}</p>}
+      </div>
+      {/* -------------------------------------- */}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
@@ -110,6 +127,12 @@ export function IncidentReportForm() {
           <p className="text-xs text-red-500 mt-1">{errors.description.message}</p>
         )}
       </div>
+
+      {/* --- ADDED IMAGE UPLOADER HERE --- */}
+      <div className="pt-2">
+        <ImageUploader folder="incident-evidence" maxImages={3} />
+      </div>
+      {/* --------------------------------- */}
 
       <button
         type="submit"
