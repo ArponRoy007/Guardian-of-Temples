@@ -24,13 +24,9 @@ export function Footer() {
 
   return (
     <>
-      {/* 
-        FOOTER FIX: 
-        Added relative and z-[90] so it sits ABOVE all floating buttons.
-        Added pointer-events-auto so it forcibly accepts clicks.
-      */}
       <footer className="w-full relative z-[90] pointer-events-auto border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-8 transition-colors">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-slate-500">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-6 text-xs text-slate-500">
+          {/* LOGO & BRANDING */}
           <div className="flex flex-col items-center md:items-start gap-3 text-center md:text-left">
             <Logo size={28} colorMode="fullColor" />
             <div>
@@ -43,48 +39,75 @@ export function Footer() {
             </div>
           </div>
 
-          <div className="flex flex-col items-center md:items-end gap-3">
-            <div className="flex flex-wrap items-center justify-center md:justify-end gap-3 text-[12px] font-bold text-slate-700 dark:text-slate-300">
-              {/* REPRESENT A TEMPLE LINK */}
-              <a
-                href="/become-temple-admin"
-                className="relative z-[100] hover:text-primary-600 dark:hover:text-primary-400 cursor-pointer px-3 py-2 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 active:scale-95 transition-all shadow-xs"
-              >
-                Represent a Temple
-              </a>
+          {/* LINKS SECTION */}
+          <div className="flex flex-col items-center md:items-end gap-4 md:gap-3 w-full md:w-auto">
+            {/* 
+              MOBILE STACKING & DESKTOP ROW 
+              Uses flex-col on mobile, flex-row on desktop (md:)
+            */}
+            <div className="flex flex-col md:flex-row items-center justify-center md:justify-end gap-4 md:gap-3 text-[12px] font-bold text-slate-700 dark:text-slate-300 w-full">
+              <div className="flex flex-col md:flex-row items-center gap-4 md:gap-3">
+                {/* REPRESENT A TEMPLE LINK */}
+                <Link
+                  href="/become-temple-admin"
+                  className="relative z-[100] hover:text-primary-600 dark:hover:text-primary-400 cursor-pointer px-3 py-2 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 active:scale-95 transition-all shadow-sm text-center"
+                >
+                  Represent a Temple
+                </Link>
 
-              <span className="text-slate-300 dark:text-slate-700">•</span>
+                {/* Hidden dot on mobile, visible on desktop */}
+                <span className="hidden md:inline-block text-slate-300 dark:text-slate-700">
+                  •
+                </span>
 
-              {/* DOWNLOAD APK BUTTON */}
-              <a
-                href="/Guardian-of-Temples.apk"
-                download="Guardian-of-Temples.apk"
-                className="relative z-[100] flex items-center gap-1.5 text-white bg-primary-600 hover:bg-primary-700 cursor-pointer px-3 py-2 rounded-lg active:scale-95 transition-all shadow-sm font-semibold"
-              >
-                <Smartphone className="h-4 w-4" />
-                <span>Get App (APK)</span>
-              </a>
+                {/* DOWNLOAD APK BUTTON (Upper) */}
+                <a
+                  href="/Guardian-of-Temples.apk"
+                  download="Guardian-of-Temples.apk"
+                  className="relative z-[100] flex items-center justify-center gap-1.5 text-white bg-primary-600 hover:bg-primary-700 cursor-pointer px-4 py-2 rounded-lg active:scale-95 transition-all shadow-sm font-semibold"
+                >
+                  <Smartphone className="h-4 w-4" />
+                  <span>Get App (APK)</span>
+                </a>
+              </div>
 
-              <span className="text-slate-300 dark:text-slate-700">•</span>
+              <span className="hidden md:inline-block text-slate-300 dark:text-slate-700">
+                •
+              </span>
 
-              {/* BUTTON FIX: Added z-[100] directly to the buttons to ensure clickability */}
+              {/* PRIVACY & TERMS (Forced to be on the same line) */}
+              <div className="flex flex-row items-center justify-center gap-3 w-full md:w-auto">
+                <Link
+                  href="/privacy"
+                  className="relative z-[100] hover:text-primary-600 dark:hover:text-primary-400 cursor-pointer px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 active:scale-95 transition-all shadow-sm"
+                >
+                  Privacy Policy
+                </Link>
+
+                <span className="text-slate-300 dark:text-slate-700">•</span>
+
+                <Link
+                  href="/terms"
+                  className="relative z-[100] hover:text-primary-600 dark:hover:text-primary-400 cursor-pointer px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 active:scale-95 transition-all shadow-sm"
+                >
+                  Terms of Service
+                </Link>
+              </div>
+
+              <span className="hidden md:inline-block text-slate-300 dark:text-slate-700">
+                •
+              </span>
+
+              {/* SUPPORT LINK (Lower) */}
               <Link
-                href="/privacy"
-                className="relative z-[100] hover:text-primary-600 dark:hover:text-primary-400 cursor-pointer px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 active:scale-95 transition-all shadow-sm"
+                href="/support"
+                className="relative z-[100] text-slate-500 hover:text-primary-600 transition-colors py-2"
               >
-                Privacy Policy
-              </Link>
-
-              <span className="text-slate-300 dark:text-slate-700">•</span>
-
-              <Link
-                href="/terms"
-                className="relative z-[100] hover:text-primary-600 dark:hover:text-primary-400 cursor-pointer px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 active:scale-95 transition-all shadow-sm"
-              >
-                Terms of Service
+                Support
               </Link>
             </div>
-            <p className="text-[11px] text-slate-400">
+
+            <p className="text-[11px] text-slate-400 text-center md:text-right w-full">
               © {new Date().getFullYear()} Guardian of Temples. All rights
               reserved.
             </p>
