@@ -18,10 +18,10 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install @supabase/supabase-js ts-node typescript
+        run: npm install @supabase/supabase-js tsx
 
       - name: Run backup script
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: npx ts-node scripts/backup-database.ts
+        run: npx tsx scripts/backup-database.ts
