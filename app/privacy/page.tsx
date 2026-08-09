@@ -164,7 +164,7 @@ export default function PrivacyPage() {
         </h2>
         <p>
           For questions or requests regarding this Privacy Policy, please
-          contact us at [insert contact email].
+          contact us at <a href="mailto:supportteamofgot21@gmail.com" className="text-primary-600 hover:underline">supportteamofgot21@gmail.com</a>.
         </p>
       </div>
     </div>

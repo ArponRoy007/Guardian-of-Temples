@@ -142,7 +142,7 @@ export default function SupportPage() {
       
       <div className="mt-8 text-center flex flex-col items-center gap-2 text-slate-500 dark:text-slate-400">
         <Mail className="h-5 w-5" />
-        <p className="text-sm">Or email us directly at: <a href="mailto:support@guardian-of-temples.com" className="text-primary-600 hover:underline">support@guardian-of-temples.com</a></p>
+        <p className="text-sm">Or email us directly at: <a href="supportteamofgot21@gmail.com" className="text-primary-600 hover:underline">supportteamofgot21@gmail.com</a></p>
       </div>
     </div>
   );
