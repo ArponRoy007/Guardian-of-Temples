@@ -15,20 +15,29 @@ function UpdatePasswordForm() {
   const searchParams = useSearchParams();
   const supabase = createClient();
 
-  // BACKEND LOGIC: Exchange the secure code from the email link for an active session
+  // BACKEND LOGIC: Verify the token hash from the email link
   useEffect(() => {
     const code = searchParams.get("code");
     
     if (code) {
-      const exchangeToken = async () => {
-        const { error } = await supabase.auth.exchangeCodeForSession(code);
+      const verifyToken = async () => {
+        // Step 1: Check if a session is already established to prevent React double-fire bugs
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) return; 
+
+        // Step 2: Verify the recovery Token Hash
+        const { error } = await supabase.auth.verifyOtp({
+          token_hash: code,
+          type: 'recovery'
+        });
+
         if (error) {
           setError("This reset link is invalid or has expired. Please request a new one.");
         }
       };
-      exchangeToken();
+      verifyToken();
     }
-  }, [searchParams, supabase.auth]);
+  }, [searchParams, supabase]);
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,7 +56,7 @@ function UpdatePasswordForm() {
 
     setLoading(true);
 
-    // Supabase Auth call to update the password (now works because of the useEffect above!)
+    // Supabase Auth call to update the password
     const { error } = await supabase.auth.updateUser({
       password: password,
     });
