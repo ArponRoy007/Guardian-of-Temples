@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-export default function UpdatePasswordPage() {
+function UpdatePasswordForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -12,7 +12,23 @@ export default function UpdatePasswordPage() {
   const [loading, setLoading] = useState(false);
   
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase = createClient();
+
+  // BACKEND LOGIC: Exchange the secure code from the email link for an active session
+  useEffect(() => {
+    const code = searchParams.get("code");
+    
+    if (code) {
+      const exchangeToken = async () => {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        if (error) {
+          setError("This reset link is invalid or has expired. Please request a new one.");
+        }
+      };
+      exchangeToken();
+    }
+  }, [searchParams, supabase.auth]);
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +47,7 @@ export default function UpdatePasswordPage() {
 
     setLoading(true);
 
-    // Supabase Auth call to update the password
+    // Supabase Auth call to update the password (now works because of the useEffect above!)
     const { error } = await supabase.auth.updateUser({
       password: password,
     });
@@ -45,7 +61,7 @@ export default function UpdatePasswordPage() {
       
       // Redirect back to your sign-in page after 3 seconds
       setTimeout(() => {
-        router.push("/login"); // Change "/login" to your actual sign-in route if different
+        router.push("/login"); 
       }, 3000);
     }
   };
@@ -114,5 +130,14 @@ export default function UpdatePasswordPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+// Next.js requires wrapping useSearchParams in a Suspense boundary
+export default function UpdatePasswordPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#0a0f1c] flex items-center justify-center text-white">Loading...</div>}>
+      <UpdatePasswordForm />
+    </Suspense>
   );
 }
