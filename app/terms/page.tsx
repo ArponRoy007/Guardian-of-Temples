@@ -201,7 +201,7 @@ export default function TermsPage() {
           18. Contact Us
         </h2>
         <p>
-          For questions regarding these Terms, please contact us at <a href="mailto:supportteamofgot21@gmail.com" className="text-primary-600 hover:underline">supportteamofgot21@gmail.com</a>.
+          For questions regarding these Terms, please contact us at <a href="mailto:support@guardianoftemples.online" className="text-primary-600 hover:underline">support@guardianoftemples.online</a>.
         </p>
       </div>
     </div>
