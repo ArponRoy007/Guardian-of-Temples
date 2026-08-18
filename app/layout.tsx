@@ -83,6 +83,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Corrected variable name here
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Guardian of Temples",
+    url: "https://guardianoftemples.online",
+    logo: "https://guardianoftemples.online/favicon.svg",
+    email: "official@guardianoftemples.online",
+  };
+
   return (
     <html
       lang="en"
@@ -91,6 +101,12 @@ export default function RootLayout({
     >
       <body className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-primary-500 selection:text-white flex flex-col">
         
+        {/* 2. INJECT THE SCHEMA INTO THE DOM */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+
         {/* MANUAL SPLASH SCREEN OVERLAY */}
         <div 
           id="app-splash-screen" 

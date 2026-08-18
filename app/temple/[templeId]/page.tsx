@@ -75,22 +75,56 @@ export default async function TempleProfilePage({ params }: TemplePageProps) {
     userId: user?.id,
   });
 
-  return (
-    <main className="min-h-screen py-8 px-4 sm:px-6 max-w-3xl mx-auto space-y-8">
-      {/* Temple Header with Cover, Safety Verdict & Actions */}
-      <TempleProfileHeader
-        temple={temple as any}
-        incidentCount={incidentCount || 0}
-        mostRecentIncidentDate={recentIncidents?.[0]?.incident_date || null}
-      />
+  // 5. Build Dynamic JSON-LD Schema
+  const districtName = (temple.districts as any)?.name_en || "Bangladesh";
+  const templeJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "PlaceOfWorship",
+    additionalType: "https://en.wikipedia.org/wiki/Hindu_temple",
+    name: temple.name,
+    image: temple.cover_image_url || "https://guardianoftemples.online/og-image.jpg",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: temple.address_text || "",
+      addressLocality: districtName,
+      addressCountry: "BD"
+    },
+    // Only include geo if latitude and longitude exist in the DB
+    ...(temple.latitude && temple.longitude ? {
+      geo: {
+        "@type": "GeoCoordinates",
+        latitude: temple.latitude,
+        longitude: temple.longitude
+      }
+    } : {}),
+    url: `https://guardianoftemples.online/${params.templeId}`,
+    isAccessibleForFree: true
+  };
 
-      {/* Scoped Temple Posts Feed & Gallery */}
-      <TemplePostsGrid
-        templeId={temple.id}
-        initialPosts={postsResult.posts}
-        initialNextCursor={postsResult.nextCursor}
-        initialHasMore={postsResult.hasMore}
+  return (
+    <>
+      {/* Dynamic Schema Injection for Google */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(templeJsonLd) }}
       />
-    </main>
+      
+      <main className="min-h-screen py-8 px-4 sm:px-6 max-w-3xl mx-auto space-y-8">
+        {/* Temple Header with Cover, Safety Verdict & Actions */}
+        <TempleProfileHeader
+          temple={temple as any}
+          incidentCount={incidentCount || 0}
+          mostRecentIncidentDate={recentIncidents?.[0]?.incident_date || null}
+        />
+
+        {/* Scoped Temple Posts Feed & Gallery */}
+        <TemplePostsGrid
+          templeId={temple.id}
+          initialPosts={postsResult.posts}
+          initialNextCursor={postsResult.nextCursor}
+          initialHasMore={postsResult.hasMore}
+        />
+      </main>
+    </>
   );
 }
