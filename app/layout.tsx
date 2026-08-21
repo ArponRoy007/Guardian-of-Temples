@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { Church } from "lucide-react";
+import PushManager from "@/app/components/PushManager";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
@@ -33,7 +34,7 @@ export const metadata: Metadata = {
     "Durga Puja 2026 Bangladesh",
     "Janmashtami 2026 Bangladesh",
     "historic Hindu temples in Bangladesh",
-    
+
     // High-Volume Bangla (Bengali) Keywords
     "বাংলাদেশের হিন্দু মন্দির", // Hindu temples in Bangladesh
     "দুর্গাপূজা ২০২৬", // Durga Puja 2026
@@ -42,7 +43,7 @@ export const metadata: Metadata = {
     "কাছের হিন্দু মন্দির", // Hindu temples near me
     "শক্তিপীঠ বাংলাদেশ", // Shakti Peethas Bangladesh
     "ঢাকেশ্বরী মন্দির", // Dhakeshwari temple
-    "বাংলাদেশের প্রাচীন মন্দির" // Ancient temples in Bangladesh
+    "বাংলাদেশের প্রাচীন মন্দির", // Ancient temples in Bangladesh
   ],
   icons: {
     icon: "/favicon.svg",
@@ -57,7 +58,7 @@ export const metadata: Metadata = {
     siteName: "Guardian of Temples",
     images: [
       {
-        url: "/og-image.jpg", 
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Guardian of Temples - Community Platform Bangladesh",
@@ -100,16 +101,17 @@ export default function RootLayout({
       className={`${inter.variable} ${manrope.variable}`}
     >
       <body className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-primary-500 selection:text-white flex flex-col">
-        
         {/* 2. INJECT THE SCHEMA INTO THE DOM */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationJsonLd),
+          }}
         />
 
         {/* MANUAL SPLASH SCREEN OVERLAY */}
-        <div 
-          id="app-splash-screen" 
+        <div
+          id="app-splash-screen"
           className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-slate-950 transition-opacity duration-500"
         >
           <div className="flex flex-col items-center space-y-4 animate-pulse">
@@ -140,6 +142,7 @@ export default function RootLayout({
           }}
         />
 
+        <PushManager />
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <AuthProvider>
             <Navbar />

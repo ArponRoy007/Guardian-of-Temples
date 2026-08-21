@@ -3,11 +3,18 @@ import { createClient } from "@/lib/supabase/server";
 import { getFeedPosts } from "@/lib/queries/getFeedPosts";
 import { TempleFeedList } from "@/components/feed/TempleFeedList";
 import { HomepageWelcomeBanner } from "@/components/feed/HomepageWelcomeBanner";
-import { MapPin, ShieldAlert, ArrowRight, Church, Sparkles } from "lucide-react";
-
+import {
+  MapPin,
+  ShieldAlert,
+  ArrowRight,
+  Church,
+  Sparkles,
+} from "lucide-react";
+import { CalendarDays } from "lucide-react";
 export const metadata = {
   title: "Guardian of Temples — Community Feed & Safety Map",
-  description: "Explore positive daily photo updates from verified temple committees across Bangladesh and monitor temple safety incident reports.",
+  description:
+    "Explore positive daily photo updates from verified temple committees across Bangladesh and monitor temple safety incident reports.",
 };
 
 export const revalidate = 60; // Stale-while-revalidate 60 seconds
@@ -31,7 +38,7 @@ export default async function HomePage() {
       <HomepageWelcomeBanner />
 
       {/* 2. Persistent Area Safety Map Pinned Callout Card */}
-      <div className="glass-card rounded-3xl p-5 border border-red-500/20 bg-red-500/5 dark:bg-red-950/20 shadow-lg flex items-center justify-between gap-4">
+      {/* <div className="glass-card rounded-3xl p-5 border border-red-500/20 bg-red-500/5 dark:bg-red-950/20 shadow-lg flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-red-600 text-white shadow-md">
             <ShieldAlert className="h-5 w-5" />
@@ -52,6 +59,30 @@ export default async function HomePage() {
         >
           <span>View Map</span>
           <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      </div> */}
+      <div className="bg-white rounded-2xl p-4 shadow-sm border border-zinc-100 flex items-center gap-3">
+        {/* Orange Calendar Icon */}
+        <div className="bg-orange-50 text-orange-600 p-3 rounded-xl flex-shrink-0">
+          <CalendarDays className="w-6 h-6" />
+        </div>
+
+        {/* Text Info */}
+        <div className="flex-1 min-w-0">
+          <h3 className="text-[15px] font-bold text-zinc-900 truncate">
+            আজকের পঞ্জিকা ও তিথি
+          </h3>
+          <p className="text-[12px] text-zinc-500 leading-snug mt-0.5 pr-2">
+            প্রতিদিনের উৎসব, ব্রত ও সঠিক পূজার সময়সূচী
+          </p>
+        </div>
+
+        {/* CTA Button */}
+        <Link
+          href="/panjika"
+          className="flex-shrink-0 bg-[#C08A34] hover:bg-[#A8792D] text-white text-[13px] font-bold px-4 py-2.5 rounded-lg flex items-center gap-1.5 active:scale-95 transition-all shadow-sm"
+        >
+          দেখুন <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>
 

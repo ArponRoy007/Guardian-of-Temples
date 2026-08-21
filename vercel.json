@@ -1,0 +1,8 @@
+{
+    "crons": [
+      {
+        "path": "/api/cron/daily-panjika",
+        "schedule": "0 23 * * *"
+      }
+    ]
+  }

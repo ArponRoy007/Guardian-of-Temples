@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "550177842492",
+    "project_id": "guardian-of-temples",
+    "storage_bucket": "guardian-of-temples.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:550177842492:android:afba2c1b47e623b12bea39",
+        "android_client_info": {
+          "package_name": "com.guardian.temples"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_oEGIIDXR_eF5EhnqHuYeH_YxT9_xp_s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
