@@ -21,4 +21,4 @@ if (!getApps().length && hasEnvVars) {
 
 // 3. Only export messaging if an app successfully initialized
 // (This prevents the 'app/no-app' crash during Vercel builds)
-export const adminMessaging = getApps().length ? getMessaging() : null;
+export const adminMessaging = (getApps().length ? getMessaging() : null) as any;
