@@ -66,7 +66,7 @@ export default function DownloadPage() {
             </span>
           </div>
           <code className="block text-[11px] font-mono text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-950 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 break-all select-all">
-            e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+          28570353f9309e04da65692b44912df4592749f3835951b8f9156599cb99d4ca
           </code>
         </div>
 
