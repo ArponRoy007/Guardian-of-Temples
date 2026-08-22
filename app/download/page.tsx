@@ -1,6 +1,12 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { Smartphone, Download, ShieldCheck, ArrowLeft, Copy } from "lucide-react";
+import {
+  Smartphone,
+  Download,
+  ShieldCheck,
+  ArrowLeft,
+  Copy,
+} from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Download Android App (APK) — Guardian of Temples",
@@ -66,7 +72,7 @@ export default function DownloadPage() {
             </span>
           </div>
           <code className="block text-[11px] font-mono text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-950 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 break-all select-all">
-          28570353f9309e04da65692b44912df4592749f3835951b8f9156599cb99d4ca
+            04cec708ff491435deaf032ddf91bd041effb01abae56c7838427ea9565c7877
           </code>
         </div>
 
@@ -85,7 +91,9 @@ export default function DownloadPage() {
                 Download APK
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                Click the download button above to save the <code>Guardian-of-Temples.apk</code> file directly to your mobile device.
+                Click the download button above to save the{" "}
+                <code>Guardian-of-Temples.apk</code> file directly to your
+                mobile device.
               </p>
             </li>
 
@@ -97,7 +105,9 @@ export default function DownloadPage() {
                 Allow Unknown Sources & Install
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                Open Settings &gt; Security and toggle <strong>"Allow Install from Unknown Sources"</strong> for your browser, then tap the downloaded APK to install.
+                Open Settings &gt; Security and toggle{" "}
+                <strong>"Allow Install from Unknown Sources"</strong> for your
+                browser, then tap the downloaded APK to install.
               </p>
             </li>
           </ol>

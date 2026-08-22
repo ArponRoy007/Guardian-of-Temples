@@ -98,7 +98,7 @@ export default async function Image({ params }: { params: { templeId: string } }
                 borderRadius: "20px",
                 fontSize: "16px",
                 fontWeight: 700,
-                width: "fit-content",
+                alignSelf: "flex-start",
               }}
             >
               ✓ Official Verified Temple

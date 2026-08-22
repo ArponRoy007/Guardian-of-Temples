@@ -4,6 +4,8 @@ import { useState, useMemo, useEffect } from "react";
 import { ChevronLeft, ChevronRight, ChevronDown, Plus, Sunrise, Sunset, Clock, Bell, BellRing } from "lucide-react";
 import { getPanchangForDate, toBnDigits } from "@/lib/panjika/engine";
 import { getEventsForDate } from "@/lib/panjika/festivals";
+import { Capacitor } from '@capacitor/core';
+import { PushNotifications } from '@capacitor/push-notifications';
 
 // --- CUSTOM ANIMATED MOON COMPONENT ---
 const AnimatedMoon = ({ tithiBn, pakshaBn }: { tithiBn: string, pakshaBn: string }) => {
@@ -69,21 +71,40 @@ export default function CalendarClient() {
   };
 
   const handleNotificationToggle = async () => {
-    if (!notificationsEnabled) {
-      // User is turning it ON - Request Permission
-      if (typeof window !== 'undefined' && 'Notification' in window) {
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
-          setNotificationsEnabled(true);
-          // TODO: Call your PushManager or subscribe API here to register the token
+    const nextState = !notificationsEnabled;
+    setNotificationsEnabled(nextState);
+  
+    if (!nextState) {
+      // Optional: Call your API to remove the subscription token
+      return;
+    }
+  
+    try {
+      if (Capacitor.isNativePlatform()) {
+        // 1. Check current native permission status
+        let permStatus = await PushNotifications.checkPermissions();
+  
+        if (permStatus.receive === 'prompt') {
+          // 2. Triggers the native Android 13+ dialog
+          permStatus = await PushNotifications.requestPermissions();
+        }
+  
+        if (permStatus.receive === 'granted') {
+          // 3. Registers device and triggers token event
+          await PushNotifications.register();
         } else {
-          alert("Please enable notifications in your phone settings to receive daily updates.");
+          setNotificationsEnabled(false);
+        }
+      } else if (typeof window !== 'undefined' && 'Notification' in window) {
+        // Browser fallback (Chrome, Safari, etc.)
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+          setNotificationsEnabled(false);
         }
       }
-    } else {
-      // User is turning it OFF
+    } catch (error) {
+      console.error('Failed to enable notifications:', error);
       setNotificationsEnabled(false);
-      // TODO: Call your unsubscribe API here to remove their token from your database
     }
   };
 
