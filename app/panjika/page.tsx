@@ -1,6 +1,9 @@
 import { Metadata } from "next";
 import DashboardClient from "./dashboard-client";
 
+
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "আজকের পঞ্জিকা | Guardian of Temples",
   description: "Guardian of Temples - বাংলা পঞ্জিকা, আজকের তিথি এবং পূজা ও উৎসবের সময়সূচী।",

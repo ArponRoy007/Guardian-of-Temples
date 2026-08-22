@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { ChevronLeft, ChevronRight, ChevronDown, Plus, Sunrise, Sunset, Clock, Bell, BellRing } from "lucide-react";
 import { getPanchangForDate, toBnDigits } from "@/lib/panjika/engine";
-import { getEventsForDate } from "@/lib/panjika/festivals";
+import { getEventsForDate, getAllUpcomingEvents } from "@/lib/panjika/festivals";
 import { Capacitor } from '@capacitor/core';
 import { PushNotifications } from '@capacitor/push-notifications';
 

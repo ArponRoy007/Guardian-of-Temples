@@ -66,24 +66,47 @@ export const toBnDigits = (n: number | string) =>
 // FESTIVAL OVERRIDE MATRIX (Ensures perfect temple alignment)
 // ------------------------------------------------------------------
 const FESTIVAL_OVERRIDES: Record<string, { tithiBn: string, tithiEn: string }> = {
-  "2026-10-10": { tithiBn: "কৃষ্ণা অমাবস্যা (মহালয়া)", tithiEn: "Krishna Amavasya (Mahalaya)" },
+  "2026-10-10": { tithiBn: "কৃষ্ণা অমাবস্যা (মহালয়া)", tithiEn: "Krishna Amavasya (Mahalaya)" },
   "2026-10-16": { tithiBn: "শুক্লা ষষ্ঠী (মহাষষ্ঠী)", tithiEn: "Shukla Shashthi (Maha Shashthi)" },
   "2026-10-17": { tithiBn: "শুক্লা ষষ্ঠী / সপ্তমী", tithiEn: "Shukla Shashthi / Saptami" },
   "2026-10-18": { tithiBn: "শুক্লা সপ্তমী (মহাসপ্তমী)", tithiEn: "Shukla Saptami (Maha Saptami)" },
   "2026-10-19": { tithiBn: "শুক্লা অষ্টমী (মহাষ্টমী)", tithiEn: "Shukla Ashtami (Maha Ashtami)" },
   "2026-10-20": { tithiBn: "শুক্লা নবমী (মহানবমী)", tithiEn: "Shukla Navami (Maha Navami)" },
-  "2026-10-21": { tithiBn: "শুক্লা দশমী (বিজয়া দশমী)", tithiEn: "Shukla Dashami (Vijaya Dashami)" },
+  "2026-10-21": { tithiBn: "শুক্লা দশমী (বিজয়া দশমী)", tithiEn: "Shukla Dashami (Vijaya Dashami)" },
 };
 
-export function getPanchangForDate(date: Date, lat = 23.8103, lng = 90.4125): PanchangInfo {
-  const year = date.getFullYear();
-  const monthStr = String(date.getMonth() + 1).padStart(2, "0");
-  const dayStr = String(date.getDate()).padStart(2, "0");
+// Default coordinates for Dhaka, Bangladesh
+const DEFAULT_LAT = 23.8103;
+const DEFAULT_LNG = 90.4125;
+
+export function getSunriseSunset(date: Date = new Date(), lat?: number, lng?: number) {
+  const targetDate = date instanceof Date && !isNaN(date.getTime()) ? date : new Date();
+  const targetLat = typeof lat === "number" && !isNaN(lat) ? lat : DEFAULT_LAT;
+  const targetLng = typeof lng === "number" && !isNaN(lng) ? lng : DEFAULT_LNG;
+
+  try {
+    const times = SunCalc.getTimes(targetDate, targetLat, targetLng);
+    return {
+      sunrise: times?.sunrise instanceof Date && !isNaN(times.sunrise.getTime()) ? times.sunrise : null,
+      sunset: times?.sunset instanceof Date && !isNaN(times.sunset.getTime()) ? times.sunset : null,
+    };
+  } catch (err) {
+    console.error("SunCalc calculation failed:", err);
+    return { sunrise: null, sunset: null };
+  }
+}
+
+export function getPanchangForDate(date: Date = new Date(), lat = DEFAULT_LAT, lng = DEFAULT_LNG): PanchangInfo {
+  const safeDate = date instanceof Date && !isNaN(date.getTime()) ? date : new Date();
+
+  const year = safeDate.getFullYear();
+  const monthStr = String(safeDate.getMonth() + 1).padStart(2, "0");
+  const dayStr = String(safeDate.getDate()).padStart(2, "0");
   const isoDate = `${year}-${monthStr}-${dayStr}`;
 
-  const d = date.getDate();
-  const m = date.getMonth();
-  const y = date.getFullYear();
+  const d = safeDate.getDate();
+  const m = safeDate.getMonth();
+  const y = safeDate.getFullYear();
 
   // Solar Transitions (Approximate Gregorian Day of Month)
   const transitions = [14, 13, 14, 14, 15, 15, 16, 17, 17, 17, 16, 15];
@@ -110,9 +133,9 @@ export function getPanchangForDate(date: Date, lat = 23.8103, lng = 90.4125): Pa
   const bnDayStr = toBnDigits(bnDayNum);
   const bnYear = (m > 3 || (m === 3 && d > transitions[3])) ? year - 593 : year - 594;
 
-  const sunTimes = SunCalc.getTimes(date, lat, lng);
-  const sunrise = sunTimes.sunrise?.toLocaleTimeString("bn-BD", { hour: "numeric", minute: "2-digit", hour12: true }) || "--:--";
-  const sunset = sunTimes.sunset?.toLocaleTimeString("bn-BD", { hour: "numeric", minute: "2-digit", hour12: true }) || "--:--";
+  const sunTimes = getSunriseSunset(safeDate, lat, lng);
+  const sunrise = sunTimes.sunrise ? sunTimes.sunrise.toLocaleTimeString("bn-BD", { hour: "numeric", minute: "2-digit", hour12: true }) : "--:--";
+  const sunset = sunTimes.sunset ? sunTimes.sunset.toLocaleTimeString("bn-BD", { hour: "numeric", minute: "2-digit", hour12: true }) : "--:--";
   
   // High-precision lunar phase calculation (evaluated at local sunrise)
   const evalDate = sunTimes.sunrise || new Date(y, m, d, 6, 0, 0);
@@ -146,15 +169,15 @@ export function getPanchangForDate(date: Date, lat = 23.8103, lng = 90.4125): Pa
   }
 
   return {
-    gregorianDate: date,
+    gregorianDate: safeDate,
     isoDate,
     bengaliDay: bnDayStr,
     bengaliMonth: monthData.name,
     bengaliYear: `${toBnDigits(bnYear)} বঙ্গাব্দ`,
     bengaliDateFull: `${bnDayStr} ${monthData.name} ${toBnDigits(bnYear)} বঙ্গাব্দ`,
     season: monthData.season,
-    weekdayBn: date.toLocaleDateString("bn-BD", { weekday: "long" }),
-    weekdayEn: date.toLocaleDateString("en-US", { weekday: "long" }),
+    weekdayBn: safeDate.toLocaleDateString("bn-BD", { weekday: "long" }),
+    weekdayEn: safeDate.toLocaleDateString("en-US", { weekday: "long" }),
     tithiBn: finalTithiBn,
     tithiEn: finalTithiEn,
     pakshaBn,

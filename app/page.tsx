@@ -4,6 +4,7 @@ import { getFeedPosts } from "@/lib/queries/getFeedPosts";
 import { TempleFeedList } from "@/components/feed/TempleFeedList";
 import { HomepageWelcomeBanner } from "@/components/feed/HomepageWelcomeBanner";
 import { ArrowRight, CalendarDays } from "lucide-react";
+import { getAllUpcomingEvents } from "@/lib/panjika/festivals";
 
 export const metadata = {
   title: "Guardian of Temples — Community Feed & Safety Map",
