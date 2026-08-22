@@ -17,6 +17,7 @@ export interface PanchangInfo {
   sunrise: string;
   sunset: string;
   monthThemeColor: string;
+  tithiEndTime?: string;
 }
 
 export const BANGLA_MONTHS = [

@@ -61,28 +61,32 @@ export default async function HomePage() {
           <ArrowRight className="h-3.5 w-3.5" />
         </Link>
       </div> */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm border border-zinc-100 flex items-center gap-3">
-        {/* Orange Calendar Icon */}
-        <div className="bg-orange-50 text-orange-600 p-3 rounded-xl flex-shrink-0">
-          <CalendarDays className="w-6 h-6" />
-        </div>
+      {/* Panjika Glass Card Section */}
+      <div className="glass-card rounded-3xl p-5 border border-orange-500/20 bg-orange-500/5 dark:bg-orange-950/20 shadow-lg flex items-center justify-between gap-4 transition-all">
+        <div className="flex items-center gap-3 min-w-0">
+          {/* Orange Calendar Icon - Matched to Safety Map Icon Style */}
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 to-[#C08A34] text-white shadow-md">
+            <CalendarDays className="h-5 w-5" />
+          </div>
 
-        {/* Text Info */}
-        <div className="flex-1 min-w-0">
-          <h3 className="text-[15px] font-bold text-zinc-900 truncate">
-            আজকের পঞ্জিকা ও তিথি
-          </h3>
-          <p className="text-[12px] text-zinc-500 leading-snug mt-0.5 pr-2">
-            প্রতিদিনের উৎসব, ব্রত ও সঠিক পূজার সময়সূচী
-          </p>
+          {/* Text Info */}
+          <div className="flex-1 min-w-0">
+            <h3 className="font-display text-[15px] font-bold text-slate-900 dark:text-white truncate">
+              আজকের পঞ্জিকা ও তিথি
+            </h3>
+            <p className="text-[12px] text-slate-500 dark:text-slate-400 leading-snug mt-0.5">
+              প্রতিদিনের উৎসব, ব্রত ও সঠিক পূজার সময়সূচী
+            </p>
+          </div>
         </div>
 
         {/* CTA Button */}
         <Link
           href="/panjika"
-          className="flex-shrink-0 bg-[#C08A34] hover:bg-[#A8792D] text-white text-[13px] font-bold px-4 py-2.5 rounded-lg flex items-center gap-1.5 active:scale-95 transition-all shadow-sm"
+          className="inline-flex items-center gap-1.5 rounded-xl bg-[#C08A34] hover:bg-[#A8792D] text-white px-4 py-2.5 text-[13px] font-bold shadow-lg shadow-orange-900/20 transition-all shrink-0 active:scale-95"
         >
-          দেখুন <ArrowRight className="w-3.5 h-3.5" />
+          <span>দেখুন</span>
+          <ArrowRight className="h-3.5 w-3.5" />
         </Link>
       </div>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Sparkles, Shield, X, Church } from "lucide-react";
+import { Sparkles, Shield, X, Church, Bell } from "lucide-react";
 
 export function HomepageWelcomeBanner() {
   const [isVisible, setIsVisible] = useState(false);
@@ -22,7 +22,7 @@ export function HomepageWelcomeBanner() {
   if (!isVisible) return null;
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-950 via-slate-900 to-primary-950 p-6 sm:p-8 border border-indigo-500/30 text-white shadow-2xl space-y-3 animate-in fade-in">
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-950 to-primary-950/50 p-6 sm:p-8 border border-slate-800 text-white shadow-2xl space-y-3 animate-in fade-in">
       <button
         onClick={handleDismiss}
         aria-label="Dismiss welcome message"
@@ -32,7 +32,8 @@ export function HomepageWelcomeBanner() {
       </button>
 
       <div className="inline-flex items-center gap-2 rounded-full bg-red-500/10 border border-red-500/30 px-3 py-1 text-xs font-semibold text-red-400">
-        <Sparkles className="h-3.5 w-3.5" />
+        {/* Changed from Sparkles to Bell for a traditional temple feel */}
+        <Bell className="h-3.5 w-3.5" />
         <span>গার্ডিয়ান অব টেম্পলস-এ আপনাকে স্বাগতম</span>
       </div>
 
@@ -43,10 +44,9 @@ export function HomepageWelcomeBanner() {
         </span>
       </h2>
 
+      {/* Short, stylish, and SEO-friendly description */}
       <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl">
-        দেশের যাচাইকৃত মন্দির কমিটিগুলোর দৈনন্দিন ছবি ও উৎসবের মুহূর্ত থেকে শুরু
-        করে এলাকাভিত্তিক নিরাপত্তা তথ্য — সবকিছু একটি প্ল্যাটফর্মে। আসুন একসাথে
-        উদযাপন করি, একে অপরের পাশে থাকি এবং সচেতন থাকি।
+        সনাতন ধর্মাবলম্বীদের সবচেয়ে বিশ্বস্ত ডিজিটাল প্ল্যাটফর্ম। আপনার আশেপাশের মন্দিরের দৈনন্দিন আপডেট, সঠিক পঞ্জিকা এবং উৎসবের সব খবর পান এক জায়গায়। যুক্ত থাকুন নিজের সম্প্রদায়ের সাথে।
       </p>
     </div>
   );
