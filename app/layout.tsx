@@ -25,26 +25,6 @@ export const metadata: Metadata = {
   },
   description:
     "Follow live updates and photos from Durga Puja celebrations at temples across Bangladesh, verified directly by temple committees. Check area safety information before you visit, and help build a trusted, community-powered platform for temples nationwide.",
-  keywords: [
-    // High-Intent English Keywords
-    "Hindu temples in Bangladesh",
-    "Bangladesh temple directory",
-    "Hindu temple map Bangladesh",
-    "live temple updates Bangladesh",
-    "Durga Puja 2026 Bangladesh",
-    "Janmashtami 2026 Bangladesh",
-    "historic Hindu temples in Bangladesh",
-
-    // High-Volume Bangla (Bengali) Keywords
-    "বাংলাদেশের হিন্দু মন্দির", // Hindu temples in Bangladesh
-    "দুর্গাপূজা ২০২৬", // Durga Puja 2026
-    "আজকের তিথি", // Today's tithi (High daily search volume)
-    "পূজার সময়সূচী", // Puja schedule
-    "কাছের হিন্দু মন্দির", // Hindu temples near me
-    "শক্তিপীঠ বাংলাদেশ", // Shakti Peethas Bangladesh
-    "ঢাকেশ্বরী মন্দির", // Dhakeshwari temple
-    "বাংলাদেশের প্রাচীন মন্দির", // Ancient temples in Bangladesh
-  ],
   icons: {
     icon: "/favicon.svg",
     apple: "/favicon.svg",
@@ -74,9 +54,6 @@ export const metadata: Metadata = {
       "Follow live updates, verified photos, and area safety information from temples across Bangladesh.",
     images: ["/og-image.jpg"],
   },
-  alternates: {
-    canonical: "https://guardianoftemples.online",
-  },
 };
 
 export default function RootLayout({
@@ -96,7 +73,7 @@ export default function RootLayout({
 
   return (
     <html
-      lang="en"
+      lang="bn-BD"
       suppressHydrationWarning
       className={`${inter.variable} ${manrope.variable}`}
     >

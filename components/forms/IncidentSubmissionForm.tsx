@@ -445,6 +445,14 @@ export function IncidentSubmissionForm() {
         </div>
       </div>
 
+      {/* Reporter Anonymity Policy Disclaimer */}
+      <div className="rounded-2xl bg-amber-500/10 border border-amber-500/20 p-4 flex items-start gap-3 text-xs text-amber-800 dark:text-amber-300">
+        <ShieldAlert className="h-5 w-5 shrink-0 text-amber-500 mt-0.5" />
+        <p className="leading-relaxed">
+          <strong>Reporter Anonymity Guarantee:</strong> Your identity is never displayed publicly and is visible only to verified moderators for follow-up purposes.
+        </p>
+      </div>
+
       {/* Submit Action Button */}
       <button
         type="submit"

@@ -155,8 +155,8 @@ export function TempleFeedList({
 
       {/* Single Column Feed Card List */}
       <div className="space-y-6">
-        {posts.map((post) => (
-          <TemplePostCard key={post.id} post={post} />
+        {posts.map((post, index) => (
+          <TemplePostCard key={post.id} post={post} priority={index < 2} />
         ))}
       </div>
 

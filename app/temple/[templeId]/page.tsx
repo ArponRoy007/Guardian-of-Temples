@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getFeedPosts } from "@/lib/queries/getFeedPosts";
 import { TempleProfileHeader } from "@/components/temple/TempleProfileHeader";
@@ -11,13 +11,43 @@ interface TemplePageProps {
   };
 }
 
-export async function generateMetadata({ params }: TemplePageProps): Promise<Metadata> {
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+async function fetchTempleBySlugOrId(param: string) {
   const supabase = createClient();
-  const { data: temple } = await supabase
+  const isUuid = UUID_REGEX.test(param);
+
+  if (isUuid) {
+    const { data } = await supabase
+      .from("temples")
+      .select("*, districts(id, name_en, name_bn, division)")
+      .eq("id", param)
+      .maybeSingle();
+    return { temple: data, isUuid: true };
+  }
+
+  // Try slug lookup first, then fallback to id
+  const { data: templeBySlug } = await supabase
     .from("temples")
-    .select("name, is_verified, address_text, districts(name_en, name_bn)")
-    .eq("id", params.templeId)
+    .select("*, districts(id, name_en, name_bn, division)")
+    .eq("slug", param)
     .maybeSingle();
+
+  if (templeBySlug) {
+    return { temple: templeBySlug, isUuid: false };
+  }
+
+  const { data: templeById } = await supabase
+    .from("temples")
+    .select("*, districts(id, name_en, name_bn, division)")
+    .eq("id", param)
+    .maybeSingle();
+
+  return { temple: templeById, isUuid: false };
+}
+
+export async function generateMetadata({ params }: TemplePageProps): Promise<Metadata> {
+  const { temple } = await fetchTempleBySlugOrId(params.templeId);
 
   if (!temple) {
     return {
@@ -28,37 +58,44 @@ export async function generateMetadata({ params }: TemplePageProps): Promise<Met
 
   const districtName = (temple.districts as any)?.name_en || "Bangladesh";
   const verifiedBadge = temple.is_verified ? "Official Verified Temple" : "Temple Profile";
+  const slugOrId = temple.slug || temple.id;
 
   return {
-    title: `${temple.name} (${districtName}) — Guardian of Temples`,
+    title: {
+      absolute: `${temple.name} (${districtName}) — Guardian of Temples`,
+    },
     description: `${verifiedBadge} page for ${temple.name} in ${districtName}. View positive community feed posts, festival updates, and verified safety information.`,
+    alternates: {
+      canonical: `/temple/${slugOrId}`,
+    },
     openGraph: {
       title: `${temple.name} — Guardian of Temples`,
       description: `Official profile and community feed updates for ${temple.name} in ${districtName}, Bangladesh.`,
+      url: `/temple/${slugOrId}`,
     },
   };
 }
 
 export default async function TempleProfilePage({ params }: TemplePageProps) {
-  const supabase = createClient();
+  const { temple, isUuid } = await fetchTempleBySlugOrId(params.templeId);
 
-  // 1. Fetch Temple Record
-  const { data: temple, error: templeErr } = await supabase
-    .from("temples")
-    .select("*, districts(id, name_en, name_bn, division)")
-    .eq("id", params.templeId)
-    .maybeSingle();
-
-  if (templeErr || !temple) {
+  if (!temple) {
     notFound();
   }
 
-  // 2. Fetch User Session (if authenticated)
+  // If accessed by UUID and a human-readable slug exists, redirect permanently to slug URL
+  if (isUuid && temple.slug) {
+    redirect(`/temple/${temple.slug}`);
+  }
+
+  const supabase = createClient();
+
+  // Fetch User Session (if authenticated)
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // 3. Fetch Incident Stats for Safety Verdict Card
+  // Fetch Incident Stats for Safety Verdict Card
   const { count: incidentCount, data: recentIncidents } = await supabase
     .from("incidents")
     .select("incident_date", { count: "exact" })
@@ -67,7 +104,7 @@ export default async function TempleProfilePage({ params }: TemplePageProps) {
     .order("incident_date", { ascending: false })
     .limit(1);
 
-  // 4. Fetch Initial Batch of Posts for this Temple
+  // Fetch Initial Batch of Posts for this Temple
   const postsResult = await getFeedPosts({
     templeId: temple.id,
     cursor: null,
@@ -75,8 +112,10 @@ export default async function TempleProfilePage({ params }: TemplePageProps) {
     userId: user?.id,
   });
 
-  // 5. Build Dynamic JSON-LD Schema
+  // Build Dynamic PlaceOfWorship JSON-LD Schema (respecting address_display_level privacy)
   const districtName = (temple.districts as any)?.name_en || "Bangladesh";
+  const isFullAddressVisible = temple.address_display_level !== "district_only";
+
   const templeJsonLd = {
     "@context": "https://schema.org",
     "@type": "PlaceOfWorship",
@@ -85,20 +124,21 @@ export default async function TempleProfilePage({ params }: TemplePageProps) {
     image: temple.cover_image_url || "https://guardianoftemples.online/og-image.jpg",
     address: {
       "@type": "PostalAddress",
-      streetAddress: temple.address_text || "",
+      ...(isFullAddressVisible && temple.address_text ? { streetAddress: temple.address_text } : {}),
       addressLocality: districtName,
-      addressCountry: "BD"
+      addressCountry: "BD",
     },
-    // Only include geo if latitude and longitude exist in the DB
-    ...(temple.latitude && temple.longitude ? {
-      geo: {
-        "@type": "GeoCoordinates",
-        latitude: temple.latitude,
-        longitude: temple.longitude
-      }
-    } : {}),
-    url: `https://guardianoftemples.online/${params.templeId}`,
-    isAccessibleForFree: true
+    ...(temple.latitude && temple.longitude
+      ? {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: temple.latitude,
+            longitude: temple.longitude,
+          },
+        }
+      : {}),
+    url: `https://guardianoftemples.online/temple/${temple.slug || temple.id}`,
+    isAccessibleForFree: true,
   };
 
   return (
@@ -108,7 +148,7 @@ export default async function TempleProfilePage({ params }: TemplePageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(templeJsonLd) }}
       />
-      
+
       <main className="min-h-screen py-8 px-4 sm:px-6 max-w-3xl mx-auto space-y-8">
         {/* Temple Header with Cover, Safety Verdict & Actions */}
         <TempleProfileHeader

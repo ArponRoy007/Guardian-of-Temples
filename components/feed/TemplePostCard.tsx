@@ -23,7 +23,13 @@ import {
   X,
 } from "lucide-react";
 
-export function TemplePostCard({ post }: { post: FeedPostItem }) {
+export function TemplePostCard({
+  post,
+  priority = false,
+}: {
+  post: FeedPostItem;
+  priority?: boolean;
+}) {
   const { user, profile, role } = useAuth();
   const [isExpanded, setIsExpanded] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -205,42 +211,41 @@ export function TemplePostCard({ post }: { post: FeedPostItem }) {
           </div>
         </div>
 
-        {/* 2. Main Post Image */}
-        <div className="relative w-full aspect-square sm:aspect-[4/3] bg-slate-900 overflow-hidden">
-          {!imageLoaded && (
-            <div className="absolute inset-0 bg-slate-800 animate-pulse flex items-center justify-center text-slate-600 text-xs">
-              Loading photo...
-            </div>
-          )}
-          <Image
-            src={post.image_url}
-            alt={post.caption || `Photo from ${templeName}`}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 600px, 700px"
-            onLoad={() => setImageLoaded(true)}
-            className={`object-cover transition-opacity duration-300 ${
-              imageLoaded ? "opacity-100" : "opacity-0"
-            }`}
-          />
-        </div>
-
-        {/* 3. Post Caption */}
-        {captionText && (
-          <div className="px-5 space-y-1">
-            <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-sans">
-              {displayedCaption}
-              {isLongCaption && (
-                <button
-                  type="button"
-                  onClick={() => setIsExpanded(!isExpanded)}
-                  className="ml-1 text-indigo-600 dark:text-indigo-400 font-bold hover:underline"
-                >
-                  {isExpanded ? "Show less" : "Read more"}
-                </button>
-              )}
-            </p>
+        {/* 2. Main Post Image & Caption (Semantic figure & figcaption) */}
+        <figure className="m-0 space-y-3">
+          <div className="relative w-full aspect-square sm:aspect-[4/3] bg-slate-900 overflow-hidden">
+            <Image
+              src={post.image_url}
+              alt={`Community photo from ${templeName}${districtName ? `, ${districtName}` : ""}`}
+              fill
+              sizes="(max-width: 768px) 100vw, 600px"
+              priority={priority}
+              placeholder={(post as any).blur_data_url ? "blur" : "empty"}
+              blurDataURL={(post as any).blur_data_url || undefined}
+              onLoad={() => setImageLoaded(true)}
+              className={`object-cover transition-opacity duration-300 ${
+                imageLoaded ? "opacity-100" : "opacity-0"
+              }`}
+            />
           </div>
-        )}
+
+          {captionText && (
+            <figcaption className="px-5 space-y-1">
+              <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-sans">
+                {displayedCaption}
+                {isLongCaption && (
+                  <button
+                    type="button"
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="ml-1 text-indigo-600 dark:text-indigo-400 font-bold hover:underline"
+                  >
+                    {isExpanded ? "Show less" : "Read more"}
+                  </button>
+                )}
+              </p>
+            </figcaption>
+          )}
+        </figure>
 
         {/* 4. Reaction Picker & Summary Row */}
         <div className="px-5 pb-4 pt-1 flex items-center justify-between border-t border-slate-100 dark:border-slate-800/80">

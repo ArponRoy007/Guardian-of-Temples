@@ -118,16 +118,16 @@ export default async function SafetyMapPage() {
         <div className="glass-card rounded-2xl p-4 sm:p-5 flex flex-col justify-between border border-slate-200 dark:border-slate-800">
           <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">
-              Districts Covered
+              District Monitoring
             </span>
             <MapPin className="h-4 w-4 text-primary-500" />
           </div>
           <div>
-            <span className="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-              64 / 64
+            <span className="font-display text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight block">
+              Verified coverage across all 64 districts
             </span>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              All 8 Divisions
+              All 8 Divisions Monitored
             </p>
           </div>
         </div>
@@ -214,16 +214,15 @@ export default async function SafetyMapPage() {
         </div>
 
         {!recentIncidentsData || recentIncidentsData.length === 0 ? (
-          <div className="rounded-3xl glass-card p-10 text-center space-y-3 border border-slate-200 dark:border-slate-800 max-w-md mx-auto">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-500/10 text-primary-500 border border-primary-500/20">
-              <Sparkles className="h-6 w-6" />
+          <div className="rounded-3xl glass-card p-8 sm:p-10 text-center space-y-3 border border-slate-200 dark:border-slate-800 max-w-lg mx-auto shadow-sm">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+              <CheckCircle2 className="h-6 w-6" />
             </div>
-            <h3 className="font-bold text-sm text-slate-900 dark:text-white">
-              No Approved Incidents Yet
+            <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
+              No Verified Incident Reports
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-              When incident reports are submitted and verified by moderators,
-              they will automatically appear here on the public feed.
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              No verified reports yet for this area — this reflects a safe, incident-free record, not missing data.
             </p>
           </div>
         ) : (
